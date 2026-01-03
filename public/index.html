@@ -58,6 +58,7 @@
                 <button class="tab-button active" onclick="showTab('health')">Health</button>
                 <button class="tab-button" onclick="showTab('auth')">Auth</button>
                 <button class="tab-button" onclick="showTab('query')">Query</button>
+                <button class="tab-button" onclick="showTab('admin')">Admin</button>
                 <button class="tab-button" onclick="showTab('products')">Products</button>
                 <button class="tab-button" onclick="showTab('users')">Users</button>
                 <button class="tab-button" onclick="showTab('orders')">Orders</button>
@@ -77,6 +78,11 @@
             <!-- Query Tab -->
             <div id="query" class="tab-content">
                 <div id="query-examples"></div>
+            </div>
+
+            <!-- Admin Tab -->
+            <div id="admin" class="tab-content">
+                <div id="admin-examples"></div>
             </div>
 
             <!-- Products Tab -->
@@ -134,6 +140,18 @@
                 { method: 'GET', url: '/api/orders?status=shipped', title: 'Filter Orders by Status', req: 'GET /api/orders?status=shipped', res: '{\n  "success": true,\n  "data": [...orders with status shipped],\n  "meta": {\n    "pagination": {"total": 3, "page": 1, "limit": 10, "pages": 1},\n    "filters": {"status": "shipped", "userId": null, "dateRange": null},\n    "sorting": {"field": "default", "order": "asc"},\n    "timestamp": "2026-01-03T10:30:00Z",\n    "processingTime": "5ms"\n  }\n}' },
                 { method: 'GET', url: '/api/orders?userId=john-doe', title: 'Filter Orders by User', req: 'GET /api/orders?userId=john-doe', res: '{\n  "success": true,\n  "data": [...orders from john-doe],\n  "meta": {\n    "pagination": {"total": 1, "page": 1, "limit": 10, "pages": 1},\n    "filters": {"status": null, "userId": "john-doe", "dateRange": null},\n    "sorting": {"field": "default", "order": "asc"},\n    "timestamp": "2026-01-03T10:30:00Z",\n    "processingTime": "4ms"\n  }\n}' },
                 { method: 'GET', url: '/api/orders?from=2026-01-01&to=2026-01-31', title: 'Filter Orders by Date Range', req: 'GET /api/orders?from=2026-01-01&to=2026-01-31', res: '{\n  "success": true,\n  "data": [...orders in date range],\n  "meta": {\n    "pagination": {"total": 10, "page": 1, "limit": 10, "pages": 1},\n    "filters": {"status": null, "userId": null, "dateRange": {"from": "2026-01-01", "to": "2026-01-31"}},\n    "sorting": {"field": "default", "order": "asc"},\n    "timestamp": "2026-01-03T10:30:00Z",\n    "processingTime": "9ms"\n  }\n}' }
+            ],
+            admin: [
+                { method: 'GET', url: '/api/meta', title: 'Get API Meta Information', req: 'GET /api/meta', res: '{\n  "success": true,\n  "data": {\n    "apiVersion": "1.0.0",\n    "environment": "production",\n    "dataState": {"products": 10, "users": 10, "orders": 10, "cartItems": 0},\n    "features": {"authentication": true, "pagination": true, "filtering": true, "sorting": true, "search": true, "testDataControl": true, "autoReset": "1 hour"},\n    "endpoints": {"total": 30, "categories": ["Health", "Auth", "Products", "Users", "Orders", "Cart", "Admin"]},\n    "timestamp": "2026-01-03T10:30:00Z",\n    "uptime": "3600s"\n  }\n}' },
+                { method: 'POST', url: '/api/admin/reset', title: 'Reset Data On Demand', req: 'POST /api/admin/reset\nHeader: x-admin-key: your-secret-key', res: '{\n  "success": true,\n  "message": "Data reset successfully to initial state",\n  "data": {\n    "products": 10,\n    "users": 10,\n    "orders": 10,\n    "cart": 0,\n    "timestamp": "2026-01-03T10:30:00Z"\n  }\n}' },
+                { method: 'POST', url: '/api/admin/seed?scenario=happy_path', title: 'Seed Happy Path Scenario', req: 'POST /api/admin/seed?scenario=happy_path\nHeader: x-admin-key: your-secret-key', res: '{\n  "success": true,\n  "message": "Data seeded with happy_path scenario",\n  "scenario": "happy_path",\n  "description": "All products in stock, users created, orders ready for processing",\n  "data": {"products": 10, "users": 10, "orders": 10, "timestamp": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'POST', url: '/api/admin/seed?scenario=low_stock', title: 'Seed Low Stock Scenario', req: 'POST /api/admin/seed?scenario=low_stock\nHeader: x-admin-key: your-secret-key', res: '{\n  "success": true,\n  "message": "Data seeded with low_stock scenario",\n  "scenario": "low_stock",\n  "description": "Some products have low or zero stock for testing",\n  "data": {"products": 10, "lowStockItems": 2, "outOfStockItems": 1, "timestamp": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'POST', url: '/api/admin/seed?scenario=high_volume', title: 'Seed High Volume Scenario', req: 'POST /api/admin/seed?scenario=high_volume\nHeader: x-admin-key: your-secret-key', res: '{\n  "success": true,\n  "message": "Data seeded with high_volume scenario",\n  "scenario": "high_volume",\n  "description": "Created 50 orders for volume testing",\n  "data": {"products": 10, "users": 10, "orders": 60, "timestamp": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'POST', url: '/api/admin/seed?scenario=default', title: 'Seed Default Scenario', req: 'POST /api/admin/seed?scenario=default\nHeader: x-admin-key: your-secret-key', res: '{\n  "success": true,\n  "message": "Data seeded with default scenario",\n  "scenario": "default",\n  "description": "Initial data loaded",\n  "data": {"products": 10, "users": 10, "orders": 10, "timestamp": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'POST', url: '/api/admin/reset', title: 'Reset Unauthorized', req: 'POST /api/admin/reset\n(No x-admin-key header)', res: '{\n  "success": false,\n  "message": "Unauthorized - Invalid or missing admin key"\n}' },
+                { method: 'POST', url: '/api/admin/seed', title: 'Seed Unauthorized', req: 'POST /api/admin/seed?scenario=happy_path\n(Invalid admin key)', res: '{\n  "success": false,\n  "message": "Unauthorized - Invalid or missing admin key"\n}' },
+                { method: 'GET', url: '/api/meta', title: 'Meta - Check Uptime', req: 'GET /api/meta', res: '{\n  "success": true,\n  "data": {\n    "apiVersion": "1.0.0",\n    "environment": "production",\n    "dataState": {"products": 10, "users": 10, "orders": 10, "cartItems": 0},\n    "features": {...},\n    "timestamp": "2026-01-03T10:30:00Z",\n    "uptime": "7200s"\n  }\n}' },
+                { method: 'GET', url: '/api/meta', title: 'Meta - Check Features', req: 'GET /api/meta', res: '{\n  "success": true,\n  "data": {\n    "apiVersion": "1.0.0",\n    "features": {\n      "authentication": true,\n      "pagination": true,\n      "filtering": true,\n      "sorting": true,\n      "search": true,\n      "testDataControl": true,\n      "autoReset": "1 hour"\n    },\n    "endpoints": {"total": 30, "categories": ["Health", "Auth", "Products", "Users", "Orders", "Cart", "Admin"]},\n    "timestamp": "2026-01-03T10:30:00Z"\n  }\n}' }
             ],
             products: [
                 { method: 'GET', url: '/api/products', title: 'Get All Products', req: 'GET /api/products', res: '{\n  "success": true,\n  "data": [...10 products],\n  "total": 10\n}' },

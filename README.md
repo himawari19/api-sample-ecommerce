@@ -107,6 +107,13 @@ DELETE /api/cart/:productId       # Remove from cart
 DELETE /api/cart                  # Clear cart
 ```
 
+### Admin - Test Data Control (3 endpoints)
+```
+GET    /api/meta                  # Get API meta information
+POST   /api/admin/reset           # Reset data on demand (requires x-admin-key)
+POST   /api/admin/seed            # Seed data with scenarios (requires x-admin-key)
+```
+
 ---
 
 ## 🔍 Query Parameters (Pagination, Filtering, Sorting, Search)
@@ -222,6 +229,122 @@ You can combine multiple parameters:
 GET /api/products?category=Electronics&sort=price&order=asc&page=1&limit=5
 GET /api/orders?status=shipped&userId=john-doe&sort=totalPrice&order=desc
 GET /api/products?q=laptop&minPrice=10000000&maxPrice=20000000&sort=rating&order=desc
+```
+
+---
+
+## 🔐 Admin - Test Data Control
+
+### Overview
+
+Admin endpoints memungkinkan kontrol penuh terhadap test data untuk CI/CD testing dan development.
+
+**Semua admin endpoints memerlukan header:**
+```
+x-admin-key: your-secret-admin-key
+```
+
+### GET /api/meta
+
+Mendapatkan informasi meta tentang API, termasuk versi, fitur, dan status data.
+
+```
+GET /api/meta
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "apiVersion": "1.0.0",
+    "environment": "production",
+    "dataState": {
+      "products": 10,
+      "users": 10,
+      "orders": 10,
+      "cartItems": 0
+    },
+    "features": {
+      "authentication": true,
+      "pagination": true,
+      "filtering": true,
+      "sorting": true,
+      "search": true,
+      "testDataControl": true,
+      "autoReset": "1 hour"
+    },
+    "endpoints": {
+      "total": 30,
+      "categories": ["Health", "Auth", "Products", "Users", "Orders", "Cart", "Admin"]
+    },
+    "timestamp": "2026-01-03T10:30:00Z",
+    "uptime": "3600s"
+  }
+}
+```
+
+### POST /api/admin/reset
+
+Reset semua data ke initial state on demand.
+
+```
+POST /api/admin/reset
+Header: x-admin-key: your-secret-key
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Data reset successfully to initial state",
+  "data": {
+    "products": 10,
+    "users": 10,
+    "orders": 10,
+    "cart": 0,
+    "timestamp": "2026-01-03T10:30:00Z"
+  }
+}
+```
+
+### POST /api/admin/seed
+
+Seed data dengan scenario tertentu untuk testing.
+
+**Scenarios:**
+
+**1. happy_path** - Default scenario
+```
+POST /api/admin/seed?scenario=happy_path
+Header: x-admin-key: your-secret-key
+```
+- Semua products tersedia
+- Users siap
+- Orders ready for processing
+
+**2. low_stock** - Test low/zero stock
+```
+POST /api/admin/seed?scenario=low_stock
+Header: x-admin-key: your-secret-key
+```
+- Beberapa products dengan stock rendah
+- Beberapa products out of stock
+- Untuk testing stock validation
+
+**3. high_volume** - Test volume tinggi
+```
+POST /api/admin/seed?scenario=high_volume
+Header: x-admin-key: your-secret-key
+```
+- 50 orders dibuat
+- Berbagai status (pending, shipped, delivered)
+- Untuk testing pagination dan filtering
+
+**4. default** - Reset ke initial state
+```
+POST /api/admin/seed?scenario=default
+Header: x-admin-key: your-secret-key
 ```
 
 ---

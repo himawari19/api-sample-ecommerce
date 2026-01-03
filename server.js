@@ -1035,6 +1035,154 @@ app.delete('/api/cart', (req, res) => {
   });
 });
 
+// ==================== ADMIN - TEST DATA CONTROL ====================
+
+// POST reset data on demand
+app.post('/api/admin/reset', (req, res) => {
+  const adminKey = req.headers['x-admin-key'];
+  
+  if (!adminKey || adminKey !== process.env.ADMIN_KEY) {
+    return res.status(401).json({
+      success: false,
+      message: 'Unauthorized - Invalid or missing admin key'
+    });
+  }
+
+  resetData();
+  
+  res.json({
+    success: true,
+    message: 'Data reset successfully to initial state',
+    data: {
+      products: products.length,
+      users: users.length,
+      orders: orders.length,
+      cart: cart.length,
+      timestamp: new Date().toISOString()
+    }
+  });
+});
+
+// POST seed data with specific scenario
+app.post('/api/admin/seed', (req, res) => {
+  const adminKey = req.headers['x-admin-key'];
+  
+  if (!adminKey || adminKey !== process.env.ADMIN_KEY) {
+    return res.status(401).json({
+      success: false,
+      message: 'Unauthorized - Invalid or missing admin key'
+    });
+  }
+
+  const scenario = req.query.scenario || 'default';
+
+  if (scenario === 'happy_path') {
+    // Happy path: all products available, users ready, orders pending
+    resetData();
+    res.json({
+      success: true,
+      message: 'Data seeded with happy_path scenario',
+      scenario: 'happy_path',
+      description: 'All products in stock, users created, orders ready for processing',
+      data: {
+        products: products.length,
+        users: users.length,
+        orders: orders.length,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } else if (scenario === 'low_stock') {
+    // Low stock scenario: some products with low stock
+    resetData();
+    products[0].stock = 2;
+    products[1].stock = 1;
+    products[2].stock = 0;
+    res.json({
+      success: true,
+      message: 'Data seeded with low_stock scenario',
+      scenario: 'low_stock',
+      description: 'Some products have low or zero stock for testing',
+      data: {
+        products: products.length,
+        lowStockItems: products.filter(p => p.stock <= 2).length,
+        outOfStockItems: products.filter(p => p.stock === 0).length,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } else if (scenario === 'high_volume') {
+    // High volume scenario: many orders
+    resetData();
+    for (let i = 0; i < 50; i++) {
+      orders.push({
+        id: `order-bulk-${i + 1}`,
+        userId: users[i % users.length].id,
+        items: [{ productId: products[i % products.length].id, quantity: Math.floor(Math.random() * 5) + 1, price: products[i % products.length].price }],
+        totalPrice: products[i % products.length].price * (Math.floor(Math.random() * 5) + 1),
+        status: ['pending', 'shipped', 'delivered'][Math.floor(Math.random() * 3)],
+        createdAt: new Date()
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Data seeded with high_volume scenario',
+      scenario: 'high_volume',
+      description: 'Created 50 orders for volume testing',
+      data: {
+        products: products.length,
+        users: users.length,
+        orders: orders.length,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } else {
+    resetData();
+    res.json({
+      success: true,
+      message: 'Data seeded with default scenario',
+      scenario: 'default',
+      description: 'Initial data loaded',
+      data: {
+        products: products.length,
+        users: users.length,
+        orders: orders.length,
+        timestamp: new Date().toISOString()
+      }
+    });
+  }
+});
+
+// GET meta information about API and last reset
+app.get('/api/meta', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      apiVersion: '1.0.0',
+      environment: process.env.NODE_ENV || 'development',
+      dataState: {
+        products: products.length,
+        users: users.length,
+        orders: orders.length,
+        cartItems: cart.length
+      },
+      features: {
+        authentication: true,
+        pagination: true,
+        filtering: true,
+        sorting: true,
+        search: true,
+        testDataControl: true,
+        autoReset: '1 hour'
+      },
+      endpoints: {
+        total: 30,
+        categories: ['Health', 'Auth', 'Products', 'Users', 'Orders', 'Cart', 'Admin']
+      },
+      timestamp: new Date().toISOString(),
+      uptime: `${Math.floor(process.uptime())}s`
+    }
+  });
+});
+
 // ==================== AUTHENTICATION ====================
 
 // POST login user
@@ -1176,6 +1324,7 @@ app.get('/api', (req, res) => {
     version: '1.0.0',
     endpoints: {
       health: 'GET /api/health',
+      meta: 'GET /api/meta',
       auth: {
         login: 'POST /api/auth/login',
         register: 'POST /api/auth/register',
@@ -1211,6 +1360,10 @@ app.get('/api', (req, res) => {
         update: 'PUT /api/cart/:productId',
         remove: 'DELETE /api/cart/:productId',
         clear: 'DELETE /api/cart'
+      },
+      admin: {
+        reset: 'POST /api/admin/reset (requires x-admin-key header)',
+        seed: 'POST /api/admin/seed?scenario=happy_path|low_stock|high_volume (requires x-admin-key header)'
       }
     },
     documentation: 'https://api-sample-ecommerce.vercel.app',
