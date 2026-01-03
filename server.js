@@ -357,10 +357,56 @@ setInterval(resetData, 3600000);
 
 // GET all products
 app.get('/api/products', (req, res) => {
+  let filtered = [...products];
+
+  // Search by name or category
+  if (req.query.q) {
+    const searchTerm = req.query.q.toLowerCase();
+    filtered = filtered.filter(p => 
+      p.name.toLowerCase().includes(searchTerm) || 
+      p.category.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  // Filter by category
+  if (req.query.category) {
+    filtered = filtered.filter(p => p.category === req.query.category);
+  }
+
+  // Filter by price range
+  if (req.query.minPrice || req.query.maxPrice) {
+    const minPrice = req.query.minPrice ? parseInt(req.query.minPrice) : 0;
+    const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : Infinity;
+    filtered = filtered.filter(p => p.price >= minPrice && p.price <= maxPrice);
+  }
+
+  // Sorting
+  if (req.query.sort) {
+    const sortField = req.query.sort;
+    const sortOrder = req.query.order === 'desc' ? -1 : 1;
+    filtered.sort((a, b) => {
+      if (a[sortField] < b[sortField]) return -1 * sortOrder;
+      if (a[sortField] > b[sortField]) return 1 * sortOrder;
+      return 0;
+    });
+  }
+
+  // Pagination
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedData = filtered.slice(startIndex, endIndex);
+
   res.json({
     success: true,
-    data: products,
-    total: products.length
+    data: paginatedData,
+    pagination: {
+      total: filtered.length,
+      page,
+      limit,
+      pages: Math.ceil(filtered.length / limit)
+    }
   });
 });
 
@@ -478,10 +524,44 @@ app.delete('/api/products/:id', (req, res) => {
 
 // GET all users
 app.get('/api/users', (req, res) => {
+  let filtered = [...users];
+
+  // Search by name or email
+  if (req.query.q) {
+    const searchTerm = req.query.q.toLowerCase();
+    filtered = filtered.filter(u => 
+      u.name.toLowerCase().includes(searchTerm) || 
+      u.email.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  // Sorting
+  if (req.query.sort) {
+    const sortField = req.query.sort;
+    const sortOrder = req.query.order === 'desc' ? -1 : 1;
+    filtered.sort((a, b) => {
+      if (a[sortField] < b[sortField]) return -1 * sortOrder;
+      if (a[sortField] > b[sortField]) return 1 * sortOrder;
+      return 0;
+    });
+  }
+
+  // Pagination
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedData = filtered.slice(startIndex, endIndex);
+
   res.json({
     success: true,
-    data: users,
-    total: users.length
+    data: paginatedData,
+    pagination: {
+      total: filtered.length,
+      page,
+      limit,
+      pages: Math.ceil(filtered.length / limit)
+    }
   });
 });
 
@@ -602,10 +682,55 @@ app.delete('/api/users/:id', (req, res) => {
 
 // GET all orders
 app.get('/api/orders', (req, res) => {
+  let filtered = [...orders];
+
+  // Filter by status
+  if (req.query.status) {
+    filtered = filtered.filter(o => o.status === req.query.status);
+  }
+
+  // Filter by userId
+  if (req.query.userId) {
+    filtered = filtered.filter(o => o.userId === req.query.userId);
+  }
+
+  // Filter by date range
+  if (req.query.from || req.query.to) {
+    const fromDate = req.query.from ? new Date(req.query.from) : new Date(0);
+    const toDate = req.query.to ? new Date(req.query.to) : new Date();
+    filtered = filtered.filter(o => {
+      const orderDate = new Date(o.createdAt);
+      return orderDate >= fromDate && orderDate <= toDate;
+    });
+  }
+
+  // Sorting
+  if (req.query.sort) {
+    const sortField = req.query.sort;
+    const sortOrder = req.query.order === 'desc' ? -1 : 1;
+    filtered.sort((a, b) => {
+      if (a[sortField] < b[sortField]) return -1 * sortOrder;
+      if (a[sortField] > b[sortField]) return 1 * sortOrder;
+      return 0;
+    });
+  }
+
+  // Pagination
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedData = filtered.slice(startIndex, endIndex);
+
   res.json({
     success: true,
-    data: orders,
-    total: orders.length
+    data: paginatedData,
+    pagination: {
+      total: filtered.length,
+      page,
+      limit,
+      pages: Math.ceil(filtered.length / limit)
+    }
   });
 });
 

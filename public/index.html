@@ -57,6 +57,7 @@
             <div class="tabs">
                 <button class="tab-button active" onclick="showTab('health')">Health</button>
                 <button class="tab-button" onclick="showTab('auth')">Auth</button>
+                <button class="tab-button" onclick="showTab('query')">Query</button>
                 <button class="tab-button" onclick="showTab('products')">Products</button>
                 <button class="tab-button" onclick="showTab('users')">Users</button>
                 <button class="tab-button" onclick="showTab('orders')">Orders</button>
@@ -71,6 +72,11 @@
             <!-- Auth Tab -->
             <div id="auth" class="tab-content">
                 <div id="auth-examples"></div>
+            </div>
+
+            <!-- Query Tab -->
+            <div id="query" class="tab-content">
+                <div id="query-examples"></div>
             </div>
 
             <!-- Products Tab -->
@@ -116,6 +122,18 @@
                 { method: 'GET', url: '/api/auth/verify', title: 'Verify Valid Token', req: 'GET /api/auth/verify\nHeader: Authorization: Bearer am9obi1kb2U6MTcwNDI3NzIwMDAwMA==', res: '{\n  "success": true,\n  "message": "Token is valid",\n  "data": {"user": {"id": "john-doe", "name": "John Doe", "email": "john@example.com"}}\n}' },
                 { method: 'GET', url: '/api/auth/verify', title: 'Verify Invalid Token', req: 'GET /api/auth/verify\nHeader: Authorization: Bearer invalid-token', res: '{\n  "success": false,\n  "message": "Invalid token"\n}' },
                 { method: 'GET', url: '/api/auth/verify', title: 'Verify Missing Token', req: 'GET /api/auth/verify\n(No Authorization header)', res: '{\n  "success": false,\n  "message": "Token is required"\n}' }
+            ],
+            query: [
+                { method: 'GET', url: '/api/products?page=1&limit=5', title: 'Pagination - Page 1', req: 'GET /api/products?page=1&limit=5', res: '{\n  "success": true,\n  "data": [...5 products],\n  "pagination": {"total": 10, "page": 1, "limit": 5, "pages": 2}\n}' },
+                { method: 'GET', url: '/api/products?sort=price&order=asc', title: 'Sort by Price Ascending', req: 'GET /api/products?sort=price&order=asc', res: '{\n  "success": true,\n  "data": [...products sorted by price asc],\n  "pagination": {"total": 10, "page": 1, "limit": 10, "pages": 1}\n}' },
+                { method: 'GET', url: '/api/products?sort=rating&order=desc', title: 'Sort by Rating Descending', req: 'GET /api/products?sort=rating&order=desc', res: '{\n  "success": true,\n  "data": [...products sorted by rating desc],\n  "pagination": {"total": 10, "page": 1, "limit": 10, "pages": 1}\n}' },
+                { method: 'GET', url: '/api/products?category=Electronics', title: 'Filter by Category', req: 'GET /api/products?category=Electronics', res: '{\n  "success": true,\n  "data": [...4 electronics products],\n  "pagination": {"total": 4, "page": 1, "limit": 10, "pages": 1}\n}' },
+                { method: 'GET', url: '/api/products?minPrice=1000000&maxPrice=5000000', title: 'Filter by Price Range', req: 'GET /api/products?minPrice=1000000&maxPrice=5000000', res: '{\n  "success": true,\n  "data": [...products in price range],\n  "pagination": {"total": 5, "page": 1, "limit": 10, "pages": 1}\n}' },
+                { method: 'GET', url: '/api/products?q=laptop', title: 'Search Products', req: 'GET /api/products?q=laptop', res: '{\n  "success": true,\n  "data": [{"id": "laptop-gaming", "name": "Laptop Gaming", ...}],\n  "pagination": {"total": 1, "page": 1, "limit": 10, "pages": 1}\n}' },
+                { method: 'GET', url: '/api/users?q=john', title: 'Search Users', req: 'GET /api/users?q=john', res: '{\n  "success": true,\n  "data": [{"id": "john-doe", "name": "John Doe", ...}],\n  "pagination": {"total": 1, "page": 1, "limit": 10, "pages": 1}\n}' },
+                { method: 'GET', url: '/api/orders?status=shipped', title: 'Filter Orders by Status', req: 'GET /api/orders?status=shipped', res: '{\n  "success": true,\n  "data": [...orders with status shipped],\n  "pagination": {"total": 3, "page": 1, "limit": 10, "pages": 1}\n}' },
+                { method: 'GET', url: '/api/orders?userId=john-doe', title: 'Filter Orders by User', req: 'GET /api/orders?userId=john-doe', res: '{\n  "success": true,\n  "data": [...orders from john-doe],\n  "pagination": {"total": 1, "page": 1, "limit": 10, "pages": 1}\n}' },
+                { method: 'GET', url: '/api/orders?from=2026-01-01&to=2026-01-31', title: 'Filter Orders by Date Range', req: 'GET /api/orders?from=2026-01-01&to=2026-01-31', res: '{\n  "success": true,\n  "data": [...orders in date range],\n  "pagination": {"total": 10, "page": 1, "limit": 10, "pages": 1}\n}' }
             ],
             products: [
                 { method: 'GET', url: '/api/products', title: 'Get All Products', req: 'GET /api/products', res: '{\n  "success": true,\n  "data": [...10 products],\n  "total": 10\n}' },

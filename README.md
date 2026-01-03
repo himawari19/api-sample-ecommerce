@@ -15,6 +15,8 @@ A complete REST API for e-commerce platform with 25+ endpoints, HTML testing das
 - ✅ **Users Management** - User registration and management
 - ✅ **Orders Management** - Order creation and tracking
 - ✅ **Shopping Cart** - Add, update, and manage cart items
+- ✅ **Authentication** - Login, Register, Token Verification
+- ✅ **Advanced Queries** - Pagination, Filtering, Sorting, Search
 - ✅ **HTML Dashboard** - Beautiful testing interface
 - ✅ **Error Handling** - Comprehensive error responses
 - ✅ **Data Validation** - Input validation and duplicate checking
@@ -59,6 +61,13 @@ http://localhost:3000
 GET /api/health
 ```
 
+### Authentication (3 endpoints)
+```
+POST   /api/auth/login             # Login user
+POST   /api/auth/register          # Register new user
+GET    /api/auth/verify            # Verify token
+```
+
 ### Products (6 endpoints)
 ```
 GET    /api/products              # Get all products
@@ -96,6 +105,151 @@ POST   /api/cart                  # Add to cart
 PUT    /api/cart/:productId       # Update cart item
 DELETE /api/cart/:productId       # Remove from cart
 DELETE /api/cart                  # Clear cart
+```
+
+---
+
+## 🔍 Query Parameters (Pagination, Filtering, Sorting, Search)
+
+### Pagination
+```
+GET /api/products?page=1&limit=5
+GET /api/users?page=2&limit=10
+GET /api/orders?page=1&limit=20
+```
+
+**Parameters:**
+- `page` - Page number (default: 1)
+- `limit` - Items per page (default: 10)
+
+**Response includes:**
+```json
+{
+  "success": true,
+  "data": [...],
+  "pagination": {
+    "total": 10,
+    "page": 1,
+    "limit": 5,
+    "pages": 2
+  }
+}
+```
+
+### Sorting
+```
+GET /api/products?sort=price&order=asc
+GET /api/products?sort=rating&order=desc
+GET /api/users?sort=name&order=asc
+```
+
+**Parameters:**
+- `sort` - Field to sort by (price, rating, name, etc.)
+- `order` - Sort order: `asc` (ascending) or `desc` (descending)
+
+### Filtering
+
+**Products - Filter by Category:**
+```
+GET /api/products?category=Electronics
+GET /api/products?category=Accessories
+```
+
+**Products - Filter by Price Range:**
+```
+GET /api/products?minPrice=1000000&maxPrice=5000000
+```
+
+**Orders - Filter by Status:**
+```
+GET /api/orders?status=pending
+GET /api/orders?status=shipped
+GET /api/orders?status=delivered
+```
+
+**Orders - Filter by User:**
+```
+GET /api/orders?userId=john-doe
+```
+
+**Orders - Filter by Date Range:**
+```
+GET /api/orders?from=2026-01-01&to=2026-01-31
+```
+
+### Search
+
+**Search Products:**
+```
+GET /api/products?q=laptop
+GET /api/products?q=gaming
+```
+
+**Search Users:**
+```
+GET /api/users?q=john
+GET /api/users?q=jane@example.com
+```
+
+### Combining Parameters
+
+You can combine multiple parameters:
+
+```
+GET /api/products?category=Electronics&sort=price&order=asc&page=1&limit=5
+GET /api/orders?status=shipped&userId=john-doe&sort=totalPrice&order=desc
+GET /api/products?q=laptop&minPrice=10000000&maxPrice=20000000&sort=rating&order=desc
+```
+
+---
+
+## 🔐 Authentication
+
+### Login
+```
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "token": "base64-encoded-token",
+    "user": {
+      "id": "john-doe",
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+  }
+}
+```
+
+### Register
+```
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "name": "New User",
+  "email": "newuser@example.com",
+  "password": "password123",
+  "phone": "08111111111",
+  "address": "Jl. New Address"
+}
+```
+
+### Verify Token
+```
+GET /api/auth/verify
+Authorization: Bearer your-token-here
 ```
 
 ---
