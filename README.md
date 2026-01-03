@@ -1,160 +1,145 @@
-# E-Commerce API Dummy
+# 🛍️ E-Commerce API Dummy
 
-Dummy REST API untuk E-Commerce yang lengkap dengan semua operasi CRUD (Create, Read, Update, Delete). API ini dirancang untuk keperluan testing dan portfolio.
+A complete REST API for e-commerce platform with 25+ endpoints, HTML testing dashboard, and live deployment on Vercel.
 
-## 🚀 Fitur
+**Live API**: https://api-sample-ecommerce.vercel.app
 
-- ✅ Products Management (GET, POST, PUT, PATCH, DELETE)
-- ✅ Users Management (GET, POST, PUT, PATCH, DELETE)
-- ✅ Orders Management (GET, POST, PUT, PATCH, DELETE)
-- ✅ Shopping Cart (GET, POST, PUT, DELETE)
-- ✅ CORS enabled
-- ✅ In-memory database (data reset saat server restart)
-- ✅ UUID untuk setiap resource
-- ✅ Error handling
+**Repository**: https://github.com/himawari19/api-sample-ecommerce
 
-## 📋 Prerequisites
+---
 
-- Node.js (v14 atau lebih tinggi)
-- npm atau yarn
-- Postman (untuk testing)
+## ✨ Features
 
-## 🔧 Instalasi
+- ✅ **25+ REST API Endpoints** - Full CRUD operations
+- ✅ **Products Management** - Get, Create, Update, Delete products
+- ✅ **Users Management** - User registration and management
+- ✅ **Orders Management** - Order creation and tracking
+- ✅ **Shopping Cart** - Add, update, and manage cart items
+- ✅ **HTML Dashboard** - Beautiful testing interface
+- ✅ **Error Handling** - Comprehensive error responses
+- ✅ **Data Validation** - Input validation and duplicate checking
+- ✅ **CORS Enabled** - Cross-origin requests supported
+- ✅ **Live on Vercel** - Instantly accessible API
 
-1. Clone repository ini:
-```bash
-git clone https://github.com/yourusername/ecommerce-api-dummy.git
-cd ecommerce-api-dummy
+---
+
+## 🚀 Quick Start
+
+### Option 1: Test Live API (Recommended)
+
+Use the live API directly in Postman:
+
+```
+Base URL: https://api-sample-ecommerce.vercel.app/api
 ```
 
-2. Install dependencies:
+### Option 2: Run Locally
+
 ```bash
+# Clone repository
+git clone https://github.com/himawari19/api-sample-ecommerce.git
+cd api-sample-ecommerce
+
+# Install dependencies
 npm install
-```
 
-3. Jalankan server:
-```bash
+# Start server
 npm start
+
+# Open dashboard
+http://localhost:3000
 ```
 
-Server akan berjalan di `http://localhost:3000`
-
-Untuk development dengan auto-reload:
-```bash
-npm run dev
-```
+---
 
 ## 📚 API Endpoints
 
-### Base URL
-```
-http://localhost:3000/api
-```
-
 ### Health Check
 ```
-GET /health
+GET /api/health
+```
+
+### Products (6 endpoints)
+```
+GET    /api/products              # Get all products
+GET    /api/products/:id          # Get product by ID
+POST   /api/products              # Create product
+PUT    /api/products/:id          # Update product (full)
+PATCH  /api/products/:id          # Update product (partial)
+DELETE /api/products/:id          # Delete product
+```
+
+### Users (6 endpoints)
+```
+GET    /api/users                 # Get all users
+GET    /api/users/:id             # Get user by ID
+POST   /api/users                 # Create user
+PUT    /api/users/:id             # Update user (full)
+PATCH  /api/users/:id             # Update user (partial)
+DELETE /api/users/:id             # Delete user
+```
+
+### Orders (6 endpoints)
+```
+GET    /api/orders                # Get all orders
+GET    /api/orders/:id            # Get order by ID
+POST   /api/orders                # Create order
+PUT    /api/orders/:id            # Update order (full)
+PATCH  /api/orders/:id            # Update order (partial)
+DELETE /api/orders/:id            # Delete order
+```
+
+### Cart (5 endpoints)
+```
+GET    /api/cart                  # Get cart
+POST   /api/cart                  # Add to cart
+PUT    /api/cart/:productId       # Update cart item
+DELETE /api/cart/:productId       # Remove from cart
+DELETE /api/cart                  # Clear cart
 ```
 
 ---
 
-## 🛍️ Products
+## 📮 Testing with Postman
 
-### Get All Products
+### Setup Environment
+
+1. Open Postman
+2. Create New Environment: `Vercel`
+3. Add variable:
+   - **Name**: `base_url`
+   - **Value**: `https://api-sample-ecommerce.vercel.app/api`
+4. Save and select environment
+
+### Example Requests
+
+**Health Check**
 ```
-GET /products
-```
-Response:
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "uuid",
-      "name": "Laptop Gaming",
-      "price": 15000000,
-      "category": "Electronics",
-      "stock": 10,
-      "description": "High performance gaming laptop",
-      "image": "https://via.placeholder.com/300x300?text=Laptop",
-      "rating": 4.5,
-      "createdAt": "2024-01-02T10:00:00.000Z"
-    }
-  ],
-  "total": 1
-}
+GET {{base_url}}/health
 ```
 
-### Get Product by ID
+**Get All Products**
 ```
-GET /products/:id
+GET {{base_url}}/products
 ```
 
-### Create Product
+**Create Product**
 ```
-POST /products
+POST {{base_url}}/products
 Content-Type: application/json
 
 {
-  "name": "Product Name",
-  "price": 100000,
+  "name": "Laptop Gaming",
+  "price": 15000000,
   "category": "Electronics",
   "stock": 10,
-  "description": "Product description",
-  "image": "https://example.com/image.jpg",
-  "rating": 4.5
+  "description": "High performance gaming laptop"
 }
 ```
 
-### Update Product (Full)
+**Create User**
 ```
-PUT /products/:id
-Content-Type: application/json
-
-{
-  "name": "Updated Name",
-  "price": 120000,
-  "category": "Electronics",
-  "stock": 15,
-  "description": "Updated description",
-  "image": "https://example.com/image.jpg",
-  "rating": 4.8
-}
-```
-
-### Update Product (Partial)
-```
-PATCH /products/:id
-Content-Type: application/json
-
-{
-  "price": 120000,
-  "stock": 15
-}
-```
-
-### Delete Product
-```
-DELETE /products/:id
-```
-
----
-
-## 👥 Users
-
-### Get All Users
-```
-GET /users
-```
-
-### Get User by ID
-```
-GET /users/:id
-```
-
-### Create User
-```
-POST /users
+POST {{base_url}}/users
 Content-Type: application/json
 
 {
@@ -166,185 +151,67 @@ Content-Type: application/json
 }
 ```
 
-### Update User (Full)
+**Create Order**
 ```
-PUT /users/:id
+POST {{base_url}}/orders
 Content-Type: application/json
 
 {
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "phone": "08987654321",
-  "address": "Jl. Sudirman No. 2"
-}
-```
-
-### Update User (Partial)
-```
-PATCH /users/:id
-Content-Type: application/json
-
-{
-  "phone": "08987654321"
-}
-```
-
-### Delete User
-```
-DELETE /users/:id
-```
-
----
-
-## 📦 Orders
-
-### Get All Orders
-```
-GET /orders
-```
-
-### Get Order by ID
-```
-GET /orders/:id
-```
-
-### Create Order
-```
-POST /orders
-Content-Type: application/json
-
-{
-  "userId": "user-uuid",
+  "userId": "user-id-here",
   "items": [
     {
-      "productId": "product-uuid",
+      "productId": "product-id-here",
       "quantity": 2,
-      "price": 100000
+      "price": 1500000
     }
   ]
 }
 ```
 
-### Update Order (Full)
+**Add to Cart**
 ```
-PUT /orders/:id
+POST {{base_url}}/cart
 Content-Type: application/json
 
 {
-  "status": "shipped",
-  "items": [
-    {
-      "productId": "product-uuid",
-      "quantity": 3,
-      "price": 100000
-    }
-  ]
-}
-```
-
-### Update Order (Partial)
-```
-PATCH /orders/:id
-Content-Type: application/json
-
-{
-  "status": "delivered"
-}
-```
-
-### Delete Order
-```
-DELETE /orders/:id
-```
-
----
-
-## 🛒 Shopping Cart
-
-### Get Cart
-```
-GET /cart
-```
-
-### Add to Cart
-```
-POST /cart
-Content-Type: application/json
-
-{
-  "productId": "product-uuid",
+  "productId": "product-id-here",
   "quantity": 2
 }
 ```
 
-### Update Cart Item
-```
-PUT /cart/:productId
-Content-Type: application/json
+---
 
-{
-  "quantity": 5
-}
-```
+## 🧪 Testing via HTML Dashboard
 
-### Remove from Cart
+When running locally, access the dashboard at:
+
 ```
-DELETE /cart/:productId
+http://localhost:3000
 ```
 
-### Clear Cart
-```
-DELETE /cart
-```
+The dashboard provides:
+- ✅ Form-based testing for all endpoints
+- ✅ Real-time response display
+- ✅ Status badges and error highlighting
+- ✅ Endpoints reference
+- ✅ Beautiful responsive UI
 
 ---
 
-## 📝 Testing dengan Postman
+## 📊 Response Format
 
-### Import Collection
-
-1. Buka Postman
-2. Klik "Import"
-3. Pilih file `postman_collection.json` (jika tersedia)
-4. Atau buat collection baru dengan endpoints di atas
-
-### Contoh Test Flow
-
-1. **Create Product**
-   - POST `/products`
-   - Simpan product ID dari response
-
-2. **Get Product**
-   - GET `/products/{product-id}`
-
-3. **Create User**
-   - POST `/users`
-   - Simpan user ID dari response
-
-4. **Add to Cart**
-   - POST `/cart`
-   - Gunakan product ID dari step 1
-
-5. **Create Order**
-   - POST `/orders`
-   - Gunakan user ID dari step 3
-
-6. **Update Order Status**
-   - PATCH `/orders/{order-id}`
-   - Ubah status menjadi "shipped"
-
----
-
-## 🔄 Response Format
-
-Semua response mengikuti format standar:
+All responses follow a standard format:
 
 ### Success Response
 ```json
 {
   "success": true,
   "message": "Operation successful",
-  "data": {}
+  "data": {
+    "id": "uuid",
+    "name": "Product Name",
+    ...
+  }
 }
 ```
 
@@ -358,7 +225,23 @@ Semua response mengikuti format standar:
 
 ---
 
-## 📊 Data Structure
+## 📋 Sample Data
+
+### Products (3 items)
+- Laptop Gaming - Rp 15.000.000
+- Smartphone Pro - Rp 8.000.000
+- Wireless Headphones - Rp 1.500.000
+
+### Users (2 items)
+- John Doe (john@example.com)
+- Jane Smith (jane@example.com)
+
+### Orders (1 item)
+- Sample order from John Doe
+
+---
+
+## 🔄 Data Structure
 
 ### Product
 ```json
@@ -420,78 +303,208 @@ Semua response mengikuti format standar:
 
 ---
 
-## 🌐 Environment Variables
+## 🛠️ Tech Stack
 
-Anda bisa mengatur port dengan environment variable:
-
-```bash
-PORT=5000 npm start
-```
-
-Default port adalah `3000`
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **ID Generation**: UUID v4
+- **CORS**: Enabled
+- **Database**: In-memory (data resets on restart)
+- **Deployment**: Vercel
 
 ---
 
-## 📦 Dependencies
+## 📦 Installation
 
-- **express**: Web framework
-- **cors**: Cross-Origin Resource Sharing
-- **uuid**: Generate unique IDs
-- **nodemon**: Development tool (auto-reload)
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Steps
+
+```bash
+# Clone repository
+git clone https://github.com/himawari19/api-sample-ecommerce.git
+
+# Navigate to directory
+cd api-sample-ecommerce
+
+# Install dependencies
+npm install
+
+# Start server
+npm start
+
+# Server runs on http://localhost:3000
+```
 
 ---
 
 ## 🚀 Deployment
 
-### Deploy ke Heroku
+### Live on Vercel
 
-1. Install Heroku CLI
-2. Login ke Heroku:
-```bash
-heroku login
+The API is already deployed on Vercel:
+
+```
+https://api-sample-ecommerce.vercel.app
 ```
 
-3. Create app:
-```bash
-heroku create your-app-name
-```
+### Auto-Deployment
 
-4. Deploy:
-```bash
-git push heroku main
-```
+Every push to GitHub automatically triggers a new deployment on Vercel.
 
-### Deploy ke Railway, Render, atau platform lain
+### Deploy Your Own
 
-Ikuti dokumentasi masing-masing platform. Pastikan untuk set environment variable `PORT` jika diperlukan.
+1. Fork this repository
+2. Connect to Vercel
+3. Vercel will auto-deploy on every push
 
 ---
 
-## 📝 Catatan
+## 📝 API Testing Checklist
 
-- Data disimpan dalam memory, akan hilang saat server restart
-- Untuk production, gunakan database seperti MongoDB, PostgreSQL, atau MySQL
-- Password tidak di-hash (hanya untuk dummy/testing)
-- Tidak ada authentication/authorization (hanya untuk testing)
+- [ ] Health check returns 200
+- [ ] Get all products works
+- [ ] Create product works (status 201)
+- [ ] Get product by ID works
+- [ ] Update product (PUT) works
+- [ ] Update product (PATCH) works
+- [ ] Delete product works
+- [ ] Get all users works
+- [ ] Create user works (status 201)
+- [ ] Email validation works (duplicate check)
+- [ ] Get all orders works
+- [ ] Create order works (auto-calculate total)
+- [ ] Get cart works
+- [ ] Add to cart works
+- [ ] Update cart item works
+- [ ] Remove from cart works
+- [ ] Clear cart works
+- [ ] 404 error for non-existent resource
+- [ ] 400 error for missing required fields
+
+---
+
+## 🐛 Troubleshooting
+
+### Port Already in Use
+```bash
+PORT=5000 npm start
+```
+
+### Module Not Found
+```bash
+npm install
+```
+
+### Dashboard Not Loading
+- Verify server is running
+- Check browser console for errors
+- Ensure http://localhost:3000 is accessible
+
+### API Not Responding
+- Check server logs
+- Verify API endpoint URL
+- Check network tab in browser/Postman
+
+---
+
+## 📊 Status Codes
+
+| Code | Meaning | Usage |
+|------|---------|-------|
+| 200 | OK | Successful GET, PUT, PATCH, DELETE |
+| 201 | Created | Successful POST |
+| 400 | Bad Request | Invalid input, missing fields |
+| 404 | Not Found | Resource doesn't exist |
+
+---
+
+## 🎓 Learning Outcomes
+
+This project demonstrates:
+
+✅ **REST API Development**
+- HTTP methods (GET, POST, PUT, PATCH, DELETE)
+- Status codes and error handling
+- Request/response format
+
+✅ **Backend Development**
+- Node.js and Express.js
+- Data management
+- Error handling and validation
+
+✅ **API Testing**
+- Postman testing
+- Manual testing
+- Error validation
+
+✅ **Deployment**
+- Vercel deployment
+- Auto-deployment from GitHub
+- Live API management
+
+---
+
+## 📸 Screenshots
+
+### HTML Dashboard
+- Beautiful testing interface
+- Form-based endpoint testing
+- Real-time response display
+
+### Postman Testing
+- All endpoints testable
+- Environment variables
+- Response validation
 
 ---
 
 ## 🤝 Contributing
 
-Silakan fork repository ini dan buat pull request untuk improvements.
+Feel free to fork this repository and submit pull requests for improvements.
 
 ---
 
 ## 📄 License
 
-MIT License - Silakan gunakan untuk keperluan apapun
+MIT License - Feel free to use this project for any purpose.
 
 ---
 
-## 📧 Support
+## 📞 Support
 
-Jika ada pertanyaan atau issue, silakan buat issue di repository ini.
+For issues or questions:
+1. Check the API endpoints documentation above
+2. Review the sample requests
+3. Test with the live API
+4. Check Postman console for errors
 
 ---
 
-**Happy Testing! 🎉**
+## 🎉 Ready to Test?
+
+### Option 1: Live API (No Setup Required)
+```
+Base URL: https://api-sample-ecommerce.vercel.app/api
+```
+
+### Option 2: Local Testing
+```bash
+npm install
+npm start
+# Open http://localhost:3000
+```
+
+---
+
+**Happy testing! 🚀**
+
+---
+
+**Last Updated**: January 2024
+
+**Repository**: https://github.com/himawari19/api-sample-ecommerce
+
+**Live API**: https://api-sample-ecommerce.vercel.app
