@@ -111,6 +111,43 @@ DELETE /api/cart                  # Clear cart
 
 ## 🔍 Query Parameters (Pagination, Filtering, Sorting, Search)
 
+### Response Format with Meta
+
+Semua GET list endpoints mengembalikan response dengan struktur:
+
+```json
+{
+  "success": true,
+  "data": [...],
+  "meta": {
+    "pagination": {
+      "total": 10,
+      "page": 1,
+      "limit": 5,
+      "pages": 2
+    },
+    "filters": {
+      "search": null,
+      "category": "Electronics",
+      "priceRange": {"min": 1000000, "max": 5000000}
+    },
+    "sorting": {
+      "field": "price",
+      "order": "asc"
+    },
+    "timestamp": "2026-01-03T10:30:00Z",
+    "processingTime": "12ms"
+  }
+}
+```
+
+**Meta Information:**
+- `pagination` - Total items, current page, limit, total pages
+- `filters` - Active filters yang digunakan
+- `sorting` - Field dan order sorting
+- `timestamp` - Waktu request diproses
+- `processingTime` - Durasi query execution
+
 ### Pagination
 ```
 GET /api/products?page=1&limit=5
@@ -121,20 +158,6 @@ GET /api/orders?page=1&limit=20
 **Parameters:**
 - `page` - Page number (default: 1)
 - `limit` - Items per page (default: 10)
-
-**Response includes:**
-```json
-{
-  "success": true,
-  "data": [...],
-  "pagination": {
-    "total": 10,
-    "page": 1,
-    "limit": 5,
-    "pages": 2
-  }
-}
-```
 
 ### Sorting
 ```

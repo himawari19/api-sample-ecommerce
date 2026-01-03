@@ -357,6 +357,7 @@ setInterval(resetData, 3600000);
 
 // GET all products
 app.get('/api/products', (req, res) => {
+  const startTime = Date.now();
   let filtered = [...products];
 
   // Search by name or category
@@ -398,14 +399,32 @@ app.get('/api/products', (req, res) => {
   const endIndex = startIndex + limit;
   const paginatedData = filtered.slice(startIndex, endIndex);
 
+  const processingTime = Date.now() - startTime;
+
   res.json({
     success: true,
     data: paginatedData,
-    pagination: {
-      total: filtered.length,
-      page,
-      limit,
-      pages: Math.ceil(filtered.length / limit)
+    meta: {
+      pagination: {
+        total: filtered.length,
+        page,
+        limit,
+        pages: Math.ceil(filtered.length / limit)
+      },
+      filters: {
+        search: req.query.q || null,
+        category: req.query.category || null,
+        priceRange: (req.query.minPrice || req.query.maxPrice) ? {
+          min: req.query.minPrice ? parseInt(req.query.minPrice) : 0,
+          max: req.query.maxPrice ? parseInt(req.query.maxPrice) : 'unlimited'
+        } : null
+      },
+      sorting: {
+        field: req.query.sort || 'default',
+        order: req.query.order || 'asc'
+      },
+      timestamp: new Date().toISOString(),
+      processingTime: `${processingTime}ms`
     }
   });
 });
@@ -524,6 +543,7 @@ app.delete('/api/products/:id', (req, res) => {
 
 // GET all users
 app.get('/api/users', (req, res) => {
+  const startTime = Date.now();
   let filtered = [...users];
 
   // Search by name or email
@@ -553,14 +573,27 @@ app.get('/api/users', (req, res) => {
   const endIndex = startIndex + limit;
   const paginatedData = filtered.slice(startIndex, endIndex);
 
+  const processingTime = Date.now() - startTime;
+
   res.json({
     success: true,
     data: paginatedData,
-    pagination: {
-      total: filtered.length,
-      page,
-      limit,
-      pages: Math.ceil(filtered.length / limit)
+    meta: {
+      pagination: {
+        total: filtered.length,
+        page,
+        limit,
+        pages: Math.ceil(filtered.length / limit)
+      },
+      filters: {
+        search: req.query.q || null
+      },
+      sorting: {
+        field: req.query.sort || 'default',
+        order: req.query.order || 'asc'
+      },
+      timestamp: new Date().toISOString(),
+      processingTime: `${processingTime}ms`
     }
   });
 });
@@ -722,14 +755,32 @@ app.get('/api/orders', (req, res) => {
   const endIndex = startIndex + limit;
   const paginatedData = filtered.slice(startIndex, endIndex);
 
+  const processingTime = Date.now() - startTime;
+
   res.json({
     success: true,
     data: paginatedData,
-    pagination: {
-      total: filtered.length,
-      page,
-      limit,
-      pages: Math.ceil(filtered.length / limit)
+    meta: {
+      pagination: {
+        total: filtered.length,
+        page,
+        limit,
+        pages: Math.ceil(filtered.length / limit)
+      },
+      filters: {
+        status: req.query.status || null,
+        userId: req.query.userId || null,
+        dateRange: (req.query.from || req.query.to) ? {
+          from: req.query.from || 'beginning',
+          to: req.query.to || 'now'
+        } : null
+      },
+      sorting: {
+        field: req.query.sort || 'default',
+        order: req.query.order || 'asc'
+      },
+      timestamp: new Date().toISOString(),
+      processingTime: `${processingTime}ms`
     }
   });
 });
