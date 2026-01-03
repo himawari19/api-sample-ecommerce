@@ -992,6 +992,13 @@ app.post('/api/cart', (req, res) => {
     });
   }
 
+  if (quantity <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Quantity must be greater than 0'
+    });
+  }
+
   const product = products.find(p => p.id === productId);
   if (!product) {
     return res.status(404).json({
@@ -1000,9 +1007,23 @@ app.post('/api/cart', (req, res) => {
     });
   }
 
+  if (quantity > product.stock) {
+    return res.status(400).json({
+      success: false,
+      message: `Quantity exceeds available stock. Available: ${product.stock}`
+    });
+  }
+
   const cartItem = cart.find(item => item.productId === productId);
   if (cartItem) {
-    cartItem.quantity += quantity;
+    const newQuantity = cartItem.quantity + quantity;
+    if (newQuantity > product.stock) {
+      return res.status(400).json({
+        success: false,
+        message: `Total quantity exceeds available stock. Available: ${product.stock}, Current in cart: ${cartItem.quantity}`
+      });
+    }
+    cartItem.quantity = newQuantity;
   } else {
     cart.push({
       id: uuidv4(),
@@ -1033,10 +1054,24 @@ app.put('/api/cart/:productId', (req, res) => {
     });
   }
 
+  const product = products.find(p => p.id === req.params.productId);
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: 'Product not found'
+    });
+  }
+
   if (quantity <= 0) {
     const index = cart.indexOf(cartItem);
     cart.splice(index, 1);
   } else {
+    if (quantity > product.stock) {
+      return res.status(400).json({
+        success: false,
+        message: `Quantity exceeds available stock. Available: ${product.stock}`
+      });
+    }
     cartItem.quantity = quantity;
   }
 
