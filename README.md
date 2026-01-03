@@ -10,13 +10,16 @@ A complete REST API for e-commerce platform with 25+ endpoints, HTML testing das
 
 ## ✨ Features
 
-- ✅ **25+ REST API Endpoints** - Full CRUD operations
+- ✅ **30+ REST API Endpoints** - Full CRUD operations
 - ✅ **Products Management** - Get, Create, Update, Delete products
 - ✅ **Users Management** - User registration and management
 - ✅ **Orders Management** - Order creation and tracking
 - ✅ **Shopping Cart** - Add, update, and manage cart items
 - ✅ **Authentication** - Login, Register, Token Verification
 - ✅ **Advanced Queries** - Pagination, Filtering, Sorting, Search
+- ✅ **Rate Limiting** - Protect API from abuse
+- ✅ **Swagger/OpenAPI** - Interactive API documentation
+- ✅ **Admin Controls** - Test data reset and seeding
 - ✅ **HTML Dashboard** - Beautiful testing interface
 - ✅ **Error Handling** - Comprehensive error responses
 - ✅ **Data Validation** - Input validation and duplicate checking
@@ -229,6 +232,56 @@ You can combine multiple parameters:
 GET /api/products?category=Electronics&sort=price&order=asc&page=1&limit=5
 GET /api/orders?status=shipped&userId=john-doe&sort=totalPrice&order=desc
 GET /api/products?q=laptop&minPrice=10000000&maxPrice=20000000&sort=rating&order=desc
+```
+
+---
+
+## 🚦 Rate Limiting
+
+API dilindungi dengan rate limiting untuk mencegah abuse dan spam.
+
+**Rate Limits:**
+
+| Endpoint | Limit | Window |
+|----------|-------|--------|
+| General endpoints | 100 requests | 15 minutes |
+| Auth (login/register) | 5 requests | 15 minutes |
+| Admin endpoints | 10 requests | 1 hour |
+
+**Response saat rate limit tercapai:**
+```json
+{
+  "message": "Too many requests from this IP, please try again later."
+}
+```
+
+**Headers yang dikembalikan:**
+```
+RateLimit-Limit: 100
+RateLimit-Remaining: 95
+RateLimit-Reset: 1704283200
+```
+
+---
+
+## 📚 API Documentation (Swagger/OpenAPI)
+
+Interactive API documentation tersedia di:
+
+```
+https://api-sample-ecommerce.vercel.app/api/docs
+```
+
+**Fitur Swagger UI:**
+- ✅ Interactive endpoint testing
+- ✅ Request/response examples
+- ✅ Parameter documentation
+- ✅ Schema definitions
+- ✅ Try it out functionality
+
+**Akses lokal:**
+```
+http://localhost:3000/api/docs
 ```
 
 ---

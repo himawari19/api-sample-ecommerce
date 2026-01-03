@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,6 +13,47 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ==================== RATE LIMITING ====================
+
+// General rate limiter: 100 requests per 15 minutes per IP
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+// Strict rate limiter for auth endpoints: 5 requests per 15 minutes per IP
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: 'Too many login/register attempts, please try again later.',
+  skipSuccessfulRequests: true, // Don't count successful requests
+});
+
+// Admin limiter: 10 requests per hour per IP
+const adminLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10,
+  message: 'Too many admin requests, please try again later.',
+});
+
+// Apply general rate limiter to all routes
+app.use(generalLimiter);
+
+// Swagger UI
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+  swaggerOptions: {
+    url: '/swagger.json'
+  }
+}));
+
+// Serve swagger.json
+app.get('/swagger.json', (req, res) => {
+  res.sendFile(path.join(__dirname, 'swagger.json'));
+});
 
 // In-memory database
 let products = [
@@ -1038,7 +1082,7 @@ app.delete('/api/cart', (req, res) => {
 // ==================== ADMIN - TEST DATA CONTROL ====================
 
 // POST reset data on demand
-app.post('/api/admin/reset', (req, res) => {
+app.post('/api/admin/reset', adminLimiter, (req, res) => {
   const adminKey = req.headers['x-admin-key'];
   
   if (!adminKey || adminKey !== process.env.ADMIN_KEY) {
@@ -1064,7 +1108,7 @@ app.post('/api/admin/reset', (req, res) => {
 });
 
 // POST seed data with specific scenario
-app.post('/api/admin/seed', (req, res) => {
+app.post('/api/admin/seed', adminLimiter, (req, res) => {
   const adminKey = req.headers['x-admin-key'];
   
   if (!adminKey || adminKey !== process.env.ADMIN_KEY) {
@@ -1186,7 +1230,7 @@ app.get('/api/meta', (req, res) => {
 // ==================== AUTHENTICATION ====================
 
 // POST login user
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', authLimiter, (req, res) => {
   const { email, password } = req.body;
   
   if (!email || !password) {
@@ -1224,7 +1268,7 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 // POST register new user
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', authLimiter, (req, res) => {
   const { name, email, password, phone, address } = req.body;
   
   if (!name || !email || !password) {
