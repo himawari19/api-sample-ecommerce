@@ -45,6 +45,83 @@ let products = [
     image: 'https://via.placeholder.com/300x300?text=Headphones',
     rating: 4.3,
     createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'USB-C Cable',
+    price: 150000,
+    category: 'Accessories',
+    stock: 100,
+    description: 'Fast charging USB-C cable',
+    image: 'https://via.placeholder.com/300x300?text=Cable',
+    rating: 4.6,
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Mechanical Keyboard',
+    price: 2500000,
+    category: 'Accessories',
+    stock: 30,
+    description: 'RGB mechanical keyboard for gaming',
+    image: 'https://via.placeholder.com/300x300?text=Keyboard',
+    rating: 4.7,
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Gaming Mouse',
+    price: 800000,
+    category: 'Accessories',
+    stock: 45,
+    description: 'High precision gaming mouse',
+    image: 'https://via.placeholder.com/300x300?text=Mouse',
+    rating: 4.4,
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Monitor 4K',
+    price: 5000000,
+    category: 'Electronics',
+    stock: 8,
+    description: '4K Ultra HD monitor for professional work',
+    image: 'https://via.placeholder.com/300x300?text=Monitor',
+    rating: 4.9,
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Webcam HD',
+    price: 1200000,
+    category: 'Electronics',
+    stock: 20,
+    description: '1080p HD webcam with microphone',
+    image: 'https://via.placeholder.com/300x300?text=Webcam',
+    rating: 4.2,
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Laptop Stand',
+    price: 350000,
+    category: 'Accessories',
+    stock: 60,
+    description: 'Adjustable aluminum laptop stand',
+    image: 'https://via.placeholder.com/300x300?text=Stand',
+    rating: 4.5,
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Power Bank 20000mAh',
+    price: 450000,
+    category: 'Accessories',
+    stock: 80,
+    description: 'Fast charging power bank with dual USB',
+    image: 'https://via.placeholder.com/300x300?text=PowerBank',
+    rating: 4.6,
+    createdAt: new Date()
   }
 ];
 
@@ -66,6 +143,78 @@ let users = [
     phone: '08987654321',
     address: 'Jl. Sudirman No. 2',
     createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Bob Wilson',
+    email: 'bob@example.com',
+    password: 'password789',
+    phone: '08555666777',
+    address: 'Jl. Ahmad Yani No. 3',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Alice Johnson',
+    email: 'alice@example.com',
+    password: 'password101',
+    phone: '08111222333',
+    address: 'Jl. Gatot Subroto No. 4',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Charlie Brown',
+    email: 'charlie@example.com',
+    password: 'password202',
+    phone: '08444555666',
+    address: 'Jl. Diponegoro No. 5',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Diana Prince',
+    email: 'diana@example.com',
+    password: 'password303',
+    phone: '08777888999',
+    address: 'Jl. Imam Bonjol No. 6',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Edward Norton',
+    email: 'edward@example.com',
+    password: 'password404',
+    phone: '08222333444',
+    address: 'Jl. Hayam Wuruk No. 7',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Fiona Green',
+    email: 'fiona@example.com',
+    password: 'password505',
+    phone: '08666777888',
+    address: 'Jl. Pemuda No. 8',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'George Miller',
+    email: 'george@example.com',
+    password: 'password606',
+    phone: '08333444555',
+    address: 'Jl. Veteran No. 9',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    name: 'Hannah Lee',
+    email: 'hannah@example.com',
+    password: 'password707',
+    phone: '08999111222',
+    address: 'Jl. Cendana No. 10',
+    createdAt: new Date()
   }
 ];
 
@@ -75,6 +224,78 @@ let orders = [
     userId: users[0].id,
     items: [{ productId: products[0].id, quantity: 1, price: products[0].price }],
     totalPrice: products[0].price,
+    status: 'pending',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    userId: users[1].id,
+    items: [{ productId: products[1].id, quantity: 2, price: products[1].price }],
+    totalPrice: products[1].price * 2,
+    status: 'shipped',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    userId: users[2].id,
+    items: [{ productId: products[2].id, quantity: 3, price: products[2].price }],
+    totalPrice: products[2].price * 3,
+    status: 'delivered',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    userId: users[3].id,
+    items: [{ productId: products[3].id, quantity: 1, price: products[3].price }, { productId: products[4].id, quantity: 1, price: products[4].price }],
+    totalPrice: products[3].price + products[4].price,
+    status: 'pending',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    userId: users[4].id,
+    items: [{ productId: products[5].id, quantity: 2, price: products[5].price }],
+    totalPrice: products[5].price * 2,
+    status: 'shipped',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    userId: users[5].id,
+    items: [{ productId: products[6].id, quantity: 1, price: products[6].price }],
+    totalPrice: products[6].price,
+    status: 'delivered',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    userId: users[6].id,
+    items: [{ productId: products[7].id, quantity: 1, price: products[7].price }, { productId: products[8].id, quantity: 2, price: products[8].price }],
+    totalPrice: products[7].price + (products[8].price * 2),
+    status: 'pending',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    userId: users[7].id,
+    items: [{ productId: products[9].id, quantity: 3, price: products[9].price }],
+    totalPrice: products[9].price * 3,
+    status: 'shipped',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    userId: users[8].id,
+    items: [{ productId: products[0].id, quantity: 1, price: products[0].price }, { productId: products[1].id, quantity: 1, price: products[1].price }],
+    totalPrice: products[0].price + products[1].price,
+    status: 'delivered',
+    createdAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    userId: users[9].id,
+    items: [{ productId: products[2].id, quantity: 2, price: products[2].price }],
+    totalPrice: products[2].price * 2,
     status: 'pending',
     createdAt: new Date()
   }
@@ -119,6 +340,83 @@ function resetData() {
       image: 'https://via.placeholder.com/300x300?text=Headphones',
       rating: 4.3,
       createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'USB-C Cable',
+      price: 150000,
+      category: 'Accessories',
+      stock: 100,
+      description: 'Fast charging USB-C cable',
+      image: 'https://via.placeholder.com/300x300?text=Cable',
+      rating: 4.6,
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Mechanical Keyboard',
+      price: 2500000,
+      category: 'Accessories',
+      stock: 30,
+      description: 'RGB mechanical keyboard for gaming',
+      image: 'https://via.placeholder.com/300x300?text=Keyboard',
+      rating: 4.7,
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Gaming Mouse',
+      price: 800000,
+      category: 'Accessories',
+      stock: 45,
+      description: 'High precision gaming mouse',
+      image: 'https://via.placeholder.com/300x300?text=Mouse',
+      rating: 4.4,
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Monitor 4K',
+      price: 5000000,
+      category: 'Electronics',
+      stock: 8,
+      description: '4K Ultra HD monitor for professional work',
+      image: 'https://via.placeholder.com/300x300?text=Monitor',
+      rating: 4.9,
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Webcam HD',
+      price: 1200000,
+      category: 'Electronics',
+      stock: 20,
+      description: '1080p HD webcam with microphone',
+      image: 'https://via.placeholder.com/300x300?text=Webcam',
+      rating: 4.2,
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Laptop Stand',
+      price: 350000,
+      category: 'Accessories',
+      stock: 60,
+      description: 'Adjustable aluminum laptop stand',
+      image: 'https://via.placeholder.com/300x300?text=Stand',
+      rating: 4.5,
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Power Bank 20000mAh',
+      price: 450000,
+      category: 'Accessories',
+      stock: 80,
+      description: 'Fast charging power bank with dual USB',
+      image: 'https://via.placeholder.com/300x300?text=PowerBank',
+      rating: 4.6,
+      createdAt: new Date()
     }
   ];
 
@@ -140,6 +438,78 @@ function resetData() {
       phone: '08987654321',
       address: 'Jl. Sudirman No. 2',
       createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Bob Wilson',
+      email: 'bob@example.com',
+      password: 'password789',
+      phone: '08555666777',
+      address: 'Jl. Ahmad Yani No. 3',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Alice Johnson',
+      email: 'alice@example.com',
+      password: 'password101',
+      phone: '08111222333',
+      address: 'Jl. Gatot Subroto No. 4',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Charlie Brown',
+      email: 'charlie@example.com',
+      password: 'password202',
+      phone: '08444555666',
+      address: 'Jl. Diponegoro No. 5',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Diana Prince',
+      email: 'diana@example.com',
+      password: 'password303',
+      phone: '08777888999',
+      address: 'Jl. Imam Bonjol No. 6',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Edward Norton',
+      email: 'edward@example.com',
+      password: 'password404',
+      phone: '08222333444',
+      address: 'Jl. Hayam Wuruk No. 7',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Fiona Green',
+      email: 'fiona@example.com',
+      password: 'password505',
+      phone: '08666777888',
+      address: 'Jl. Pemuda No. 8',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'George Miller',
+      email: 'george@example.com',
+      password: 'password606',
+      phone: '08333444555',
+      address: 'Jl. Veteran No. 9',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Hannah Lee',
+      email: 'hannah@example.com',
+      password: 'password707',
+      phone: '08999111222',
+      address: 'Jl. Cendana No. 10',
+      createdAt: new Date()
     }
   ];
 
@@ -149,6 +519,78 @@ function resetData() {
       userId: users[0].id,
       items: [{ productId: products[0].id, quantity: 1, price: products[0].price }],
       totalPrice: products[0].price,
+      status: 'pending',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: users[1].id,
+      items: [{ productId: products[1].id, quantity: 2, price: products[1].price }],
+      totalPrice: products[1].price * 2,
+      status: 'shipped',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: users[2].id,
+      items: [{ productId: products[2].id, quantity: 3, price: products[2].price }],
+      totalPrice: products[2].price * 3,
+      status: 'delivered',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: users[3].id,
+      items: [{ productId: products[3].id, quantity: 1, price: products[3].price }, { productId: products[4].id, quantity: 1, price: products[4].price }],
+      totalPrice: products[3].price + products[4].price,
+      status: 'pending',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: users[4].id,
+      items: [{ productId: products[5].id, quantity: 2, price: products[5].price }],
+      totalPrice: products[5].price * 2,
+      status: 'shipped',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: users[5].id,
+      items: [{ productId: products[6].id, quantity: 1, price: products[6].price }],
+      totalPrice: products[6].price,
+      status: 'delivered',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: users[6].id,
+      items: [{ productId: products[7].id, quantity: 1, price: products[7].price }, { productId: products[8].id, quantity: 2, price: products[8].price }],
+      totalPrice: products[7].price + (products[8].price * 2),
+      status: 'pending',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: users[7].id,
+      items: [{ productId: products[9].id, quantity: 3, price: products[9].price }],
+      totalPrice: products[9].price * 3,
+      status: 'shipped',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: users[8].id,
+      items: [{ productId: products[0].id, quantity: 1, price: products[0].price }, { productId: products[1].id, quantity: 1, price: products[1].price }],
+      totalPrice: products[0].price + products[1].price,
+      status: 'delivered',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: users[9].id,
+      items: [{ productId: products[2].id, quantity: 2, price: products[2].price }],
+      totalPrice: products[2].price * 2,
       status: 'pending',
       createdAt: new Date()
     }
