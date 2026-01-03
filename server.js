@@ -553,6 +553,52 @@ app.delete('/api/cart', (req, res) => {
   });
 });
 
+// ==================== API INFO ====================
+
+app.get('/api', (req, res) => {
+  res.json({
+    success: true,
+    message: 'E-Commerce API',
+    version: '1.0.0',
+    endpoints: {
+      health: 'GET /api/health',
+      products: {
+        getAll: 'GET /api/products',
+        getById: 'GET /api/products/:id',
+        create: 'POST /api/products',
+        update: 'PUT /api/products/:id',
+        partialUpdate: 'PATCH /api/products/:id',
+        delete: 'DELETE /api/products/:id'
+      },
+      users: {
+        getAll: 'GET /api/users',
+        getById: 'GET /api/users/:id',
+        create: 'POST /api/users',
+        update: 'PUT /api/users/:id',
+        partialUpdate: 'PATCH /api/users/:id',
+        delete: 'DELETE /api/users/:id'
+      },
+      orders: {
+        getAll: 'GET /api/orders',
+        getById: 'GET /api/orders/:id',
+        create: 'POST /api/orders',
+        update: 'PUT /api/orders/:id',
+        partialUpdate: 'PATCH /api/orders/:id',
+        delete: 'DELETE /api/orders/:id'
+      },
+      cart: {
+        get: 'GET /api/cart',
+        add: 'POST /api/cart',
+        update: 'PUT /api/cart/:productId',
+        remove: 'DELETE /api/cart/:productId',
+        clear: 'DELETE /api/cart'
+      }
+    },
+    documentation: 'https://api-sample-ecommerce.vercel.app',
+    repository: 'https://github.com/himawari19/api-sample-ecommerce'
+  });
+});
+
 // ==================== HEALTH CHECK ====================
 
 app.get('/api/health', (req, res) => {
