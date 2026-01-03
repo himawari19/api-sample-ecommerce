@@ -117,6 +117,19 @@ POST   /api/admin/reset           # Reset data on demand (requires x-admin-key)
 POST   /api/admin/seed            # Seed data with scenarios (requires x-admin-key)
 ```
 
+### Webhooks (3 endpoints)
+```
+GET    /api/webhooks              # Get all registered webhooks
+POST   /api/webhooks              # Register new webhook
+DELETE /api/webhooks/:id          # Unregister webhook
+```
+
+### Metrics (2 endpoints)
+```
+GET    /api/metrics               # Get all performance metrics
+GET    /api/metrics/:method/:path # Get metrics for specific endpoint
+```
+
 ---
 
 ## 🚦 Rate Limiting
@@ -345,7 +358,182 @@ http://localhost:3000/api/docs
 
 ---
 
-## 🔐 Admin - Test Data Control
+## 🔔 Webhook System
+
+API menggunakan webhook untuk real-time event notifications saat ada perubahan data.
+
+**Supported Events:**
+- `product.created` - Saat product baru dibuat
+- `product.updated` - Saat product diupdate
+- `product.deleted` - Saat product dihapus
+- `user.created` - Saat user baru register
+- `user.updated` - Saat user profile diupdate
+- `user.deleted` - Saat user dihapus
+- `order.created` - Saat order baru dibuat
+- `order.updated` - Saat order status berubah
+- `order.deleted` - Saat order dihapus
+- `cart.updated` - Saat cart diupdate
+- `cart.cleared` - Saat cart dikosongkan
+
+### Register Webhook
+
+```
+POST /api/webhooks
+Content-Type: application/json
+
+{
+  "event": "order.created",
+  "url": "https://your-domain.com/webhook"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Webhook registered successfully",
+  "data": {
+    "id": "webhook-id",
+    "event": "order.created",
+    "url": "https://your-domain.com/webhook",
+    "active": true,
+    "createdAt": "2026-01-03T10:30:00Z"
+  }
+}
+```
+
+### Get All Webhooks
+
+```
+GET /api/webhooks
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "event": "order.created",
+      "url": "https://your-domain.com/webhook",
+      "active": true,
+      "createdAt": "2026-01-03T10:30:00Z"
+    }
+  ],
+  "total": 1
+}
+```
+
+### Unregister Webhook
+
+```
+DELETE /api/webhooks/:id
+```
+
+### Webhook Payload Format
+
+Saat event terjadi, webhook akan menerima payload:
+
+```json
+{
+  "event": "order.created",
+  "timestamp": "2026-01-03T10:30:00Z",
+  "data": {
+    "id": "order-123",
+    "userId": "user-456",
+    "items": [...],
+    "totalPrice": 15000000,
+    "status": "pending",
+    "createdAt": "2026-01-03T10:30:00Z"
+  }
+}
+```
+
+---
+
+## 📊 Performance Metrics
+
+API melacak performance metrics untuk setiap endpoint untuk monitoring dan optimization.
+
+**Metrics yang Ditrack:**
+- Total requests per endpoint
+- Average response time
+- Min/Max response time
+- Last request time
+
+### Get All Metrics
+
+```
+GET /api/metrics
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "summary": {
+      "totalEndpoints": 30,
+      "totalRequests": 1250,
+      "avgResponseTime": 45,
+      "slowestEndpoint": {
+        "endpoint": "POST /api/orders",
+        "avgTime": 120
+      },
+      "fastestEndpoint": {
+        "endpoint": "GET /api/health",
+        "avgTime": 2
+      }
+    },
+    "endpoints": [
+      {
+        "endpoint": "GET /api/products",
+        "method": "GET",
+        "path": "/api/products",
+        "totalRequests": 150,
+        "totalTime": 6750,
+        "minTime": 5,
+        "maxTime": 250,
+        "avgTime": 45,
+        "lastRequestTime": "2026-01-03T10:30:00Z"
+      }
+    ]
+  }
+}
+```
+
+### Get Metrics for Specific Endpoint
+
+```
+GET /api/metrics/GET/api/products
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "endpoint": "GET /api/products",
+    "method": "GET",
+    "path": "/api/products",
+    "totalRequests": 150,
+    "totalTime": 6750,
+    "minTime": 5,
+    "maxTime": 250,
+    "avgTime": 45,
+    "lastRequestTime": "2026-01-03T10:30:00Z"
+  }
+}
+```
+
+### Response Time Header
+
+Setiap response akan include header:
+```
+X-Response-Time: 45ms
+```
+
+---
 
 ### Overview
 

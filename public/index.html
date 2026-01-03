@@ -63,6 +63,8 @@
                 <button class="tab-button" onclick="showTab('users')">Users</button>
                 <button class="tab-button" onclick="showTab('orders')">Orders</button>
                 <button class="tab-button" onclick="showTab('cart')">Cart</button>
+                <button class="tab-button" onclick="showTab('webhooks')">Webhooks</button>
+                <button class="tab-button" onclick="showTab('metrics')">Metrics</button>
             </div>
 
             <!-- Health Tab -->
@@ -103,6 +105,16 @@
             <!-- Cart Tab -->
             <div id="cart" class="tab-content">
                 <div id="cart-examples"></div>
+            </div>
+
+            <!-- Webhooks Tab -->
+            <div id="webhooks" class="tab-content">
+                <div id="webhooks-examples"></div>
+            </div>
+
+            <!-- Metrics Tab -->
+            <div id="metrics" class="tab-content">
+                <div id="metrics-examples"></div>
             </div>
         </div>
 
@@ -200,6 +212,30 @@
                 { method: 'DELETE', url: '/api/cart/:productId', title: 'Remove Item', req: 'DELETE /api/cart/prod-003', res: '{\n  "success": true,\n  "message": "Item removed from cart",\n  "data": {"id": "cart-003", "productId": "prod-003", ...}\n}' },
                 { method: 'DELETE', url: '/api/cart', title: 'Clear Cart', req: 'DELETE /api/cart', res: '{\n  "success": true,\n  "message": "Cart cleared successfully"\n}' },
                 { method: 'GET', url: '/api/cart', title: 'Get Empty Cart', req: 'GET /api/cart', res: '{\n  "success": true,\n  "data": [],\n  "total": 0\n}' }
+            ],
+            webhooks: [
+                { method: 'GET', url: '/api/webhooks', title: 'Get All Webhooks', req: 'GET /api/webhooks', res: '{\n  "success": true,\n  "data": [{"event": "order.created", "url": "https://your-domain.com/webhook", "active": true, "createdAt": "2026-01-03T10:30:00Z"}],\n  "total": 1\n}' },
+                { method: 'POST', url: '/api/webhooks', title: 'Register Order Created Webhook', req: '{\n  "event": "order.created",\n  "url": "https://your-domain.com/webhook"\n}', res: '{\n  "success": true,\n  "message": "Webhook registered successfully",\n  "data": {"id": "webhook-123", "event": "order.created", "url": "https://your-domain.com/webhook", "active": true, "createdAt": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'POST', url: '/api/webhooks', title: 'Register Product Updated Webhook', req: '{\n  "event": "product.updated",\n  "url": "https://your-domain.com/webhook"\n}', res: '{\n  "success": true,\n  "message": "Webhook registered successfully",\n  "data": {"id": "webhook-124", "event": "product.updated", "url": "https://your-domain.com/webhook", "active": true, "createdAt": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'POST', url: '/api/webhooks', title: 'Register User Created Webhook', req: '{\n  "event": "user.created",\n  "url": "https://your-domain.com/webhook"\n}', res: '{\n  "success": true,\n  "message": "Webhook registered successfully",\n  "data": {"id": "webhook-125", "event": "user.created", "url": "https://your-domain.com/webhook", "active": true, "createdAt": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'POST', url: '/api/webhooks', title: 'Register Cart Updated Webhook', req: '{\n  "event": "cart.updated",\n  "url": "https://your-domain.com/webhook"\n}', res: '{\n  "success": true,\n  "message": "Webhook registered successfully",\n  "data": {"id": "webhook-126", "event": "cart.updated", "url": "https://your-domain.com/webhook", "active": true, "createdAt": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'POST', url: '/api/webhooks', title: 'Register Order Deleted Webhook', req: '{\n  "event": "order.deleted",\n  "url": "https://your-domain.com/webhook"\n}', res: '{\n  "success": true,\n  "message": "Webhook registered successfully",\n  "data": {"id": "webhook-127", "event": "order.deleted", "url": "https://your-domain.com/webhook", "active": true, "createdAt": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'DELETE', url: '/api/webhooks/:id', title: 'Unregister Webhook 1', req: 'DELETE /api/webhooks/webhook-123', res: '{\n  "success": true,\n  "message": "Webhook unregistered successfully",\n  "data": {"id": "webhook-123", "event": "order.created", "url": "https://your-domain.com/webhook", "active": true, "createdAt": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'DELETE', url: '/api/webhooks/:id', title: 'Unregister Webhook 2', req: 'DELETE /api/webhooks/webhook-124', res: '{\n  "success": true,\n  "message": "Webhook unregistered successfully",\n  "data": {"id": "webhook-124", "event": "product.updated", "url": "https://your-domain.com/webhook", "active": true, "createdAt": "2026-01-03T10:30:00Z"}\n}' },
+                { method: 'GET', url: '/api/webhooks', title: 'Get Webhooks After Delete', req: 'GET /api/webhooks', res: '{\n  "success": true,\n  "data": [{"event": "user.created", "url": "https://your-domain.com/webhook", "active": true, "createdAt": "2026-01-03T10:30:00Z"}],\n  "total": 1\n}' },
+                { method: 'POST', url: '/api/webhooks', title: 'Register Invalid Event', req: '{\n  "event": "invalid.event",\n  "url": "https://your-domain.com/webhook"\n}', res: '{\n  "success": false,\n  "message": "Invalid event. Valid events: product.created, product.updated, ..."\n}' }
+            ],
+            metrics: [
+                { method: 'GET', url: '/api/metrics', title: 'Get All Metrics', req: 'GET /api/metrics', res: '{\n  "success": true,\n  "data": {\n    "summary": {\n      "totalEndpoints": 30,\n      "totalRequests": 1250,\n      "avgResponseTime": 45,\n      "slowestEndpoint": {"endpoint": "POST /api/orders", "avgTime": 120},\n      "fastestEndpoint": {"endpoint": "GET /api/health", "avgTime": 2}\n    },\n    "endpoints": [...]\n  }\n}' },
+                { method: 'GET', url: '/api/metrics/GET/api/products', title: 'Get Products Metrics', req: 'GET /api/metrics/GET/api/products', res: '{\n  "success": true,\n  "data": {\n    "endpoint": "GET /api/products",\n    "method": "GET",\n    "path": "/api/products",\n    "totalRequests": 150,\n    "totalTime": 6750,\n    "minTime": 5,\n    "maxTime": 250,\n    "avgTime": 45,\n    "lastRequestTime": "2026-01-03T10:30:00Z"\n  }\n}' },
+                { method: 'GET', url: '/api/metrics/POST/api/orders', title: 'Get Orders Create Metrics', req: 'GET /api/metrics/POST/api/orders', res: '{\n  "success": true,\n  "data": {\n    "endpoint": "POST /api/orders",\n    "method": "POST",\n    "path": "/api/orders",\n    "totalRequests": 45,\n    "totalTime": 5400,\n    "minTime": 50,\n    "maxTime": 250,\n    "avgTime": 120,\n    "lastRequestTime": "2026-01-03T10:30:00Z"\n  }\n}' },
+                { method: 'GET', url: '/api/metrics/GET/api/users', title: 'Get Users Metrics', req: 'GET /api/metrics/GET/api/users', res: '{\n  "success": true,\n  "data": {\n    "endpoint": "GET /api/users",\n    "method": "GET",\n    "path": "/api/users",\n    "totalRequests": 200,\n    "totalTime": 8000,\n    "minTime": 10,\n    "maxTime": 150,\n    "avgTime": 40,\n    "lastRequestTime": "2026-01-03T10:30:00Z"\n  }\n}' },
+                { method: 'GET', url: '/api/metrics/GET/api/cart', title: 'Get Cart Metrics', req: 'GET /api/metrics/GET/api/cart', res: '{\n  "success": true,\n  "data": {\n    "endpoint": "GET /api/cart",\n    "method": "GET",\n    "path": "/api/cart",\n    "totalRequests": 300,\n    "totalTime": 4500,\n    "minTime": 2,\n    "maxTime": 50,\n    "avgTime": 15,\n    "lastRequestTime": "2026-01-03T10:30:00Z"\n  }\n}' },
+                { method: 'GET', url: '/api/metrics/POST/api/products', title: 'Get Products Create Metrics', req: 'GET /api/metrics/POST/api/products', res: '{\n  "success": true,\n  "data": {\n    "endpoint": "POST /api/products",\n    "method": "POST",\n    "path": "/api/products",\n    "totalRequests": 30,\n    "totalTime": 2100,\n    "minTime": 40,\n    "maxTime": 120,\n    "avgTime": 70,\n    "lastRequestTime": "2026-01-03T10:30:00Z"\n  }\n}' },
+                { method: 'GET', url: '/api/metrics/GET/api/health', title: 'Get Health Check Metrics', req: 'GET /api/metrics/GET/api/health', res: '{\n  "success": true,\n  "data": {\n    "endpoint": "GET /api/health",\n    "method": "GET",\n    "path": "/api/health",\n    "totalRequests": 5000,\n    "totalTime": 10000,\n    "minTime": 1,\n    "maxTime": 10,\n    "avgTime": 2,\n    "lastRequestTime": "2026-01-03T10:30:00Z"\n  }\n}' },
+                { method: 'GET', url: '/api/metrics/DELETE/api/products/:id', title: 'Get Products Delete Metrics', req: 'GET /api/metrics/DELETE/api/products/:id', res: '{\n  "success": true,\n  "data": {\n    "endpoint": "DELETE /api/products/:id",\n    "method": "DELETE",\n    "path": "/api/products/:id",\n    "totalRequests": 20,\n    "totalTime": 1200,\n    "minTime": 30,\n    "maxTime": 100,\n    "avgTime": 60,\n    "lastRequestTime": "2026-01-03T10:30:00Z"\n  }\n}' },
+                { method: 'GET', url: '/api/metrics/PUT/api/orders/:id', title: 'Get Orders Update Metrics', req: 'GET /api/metrics/PUT/api/orders/:id', res: '{\n  "success": true,\n  "data": {\n    "endpoint": "PUT /api/orders/:id",\n    "method": "PUT",\n    "path": "/api/orders/:id",\n    "totalRequests": 35,\n    "totalTime": 2800,\n    "minTime": 45,\n    "maxTime": 150,\n    "avgTime": 80,\n    "lastRequestTime": "2026-01-03T10:30:00Z"\n  }\n}' },
+                { method: 'GET', url: '/api/metrics/PATCH/api/users/:id', title: 'Get Users Patch Metrics', req: 'GET /api/metrics/PATCH/api/users/:id', res: '{\n  "success": true,\n  "data": {\n    "endpoint": "PATCH /api/users/:id",\n    "method": "PATCH",\n    "path": "/api/users/:id",\n    "totalRequests": 25,\n    "totalTime": 1500,\n    "minTime": 35,\n    "maxTime": 120,\n    "avgTime": 60,\n    "lastRequestTime": "2026-01-03T10:30:00Z"\n  }\n}' }
             ]
         };
 

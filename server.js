@@ -7,6 +7,107 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ==================== RESPONSE TIME METRICS ====================
+
+// Store metrics for each endpoint
+const metrics = new Map();
+
+// Middleware to track response time
+function metricsMiddleware(req, res, next) {
+  const startTime = Date.now();
+  
+  // Override res.json to capture response time
+  const originalJson = res.json.bind(res);
+  res.json = function(data) {
+    const responseTime = Date.now() - startTime;
+    const endpoint = `${req.method} ${req.path}`;
+    
+    // Store metrics
+    if (!metrics.has(endpoint)) {
+      metrics.set(endpoint, {
+        endpoint,
+        method: req.method,
+        path: req.path,
+        totalRequests: 0,
+        totalTime: 0,
+        minTime: Infinity,
+        maxTime: 0,
+        avgTime: 0,
+        lastRequestTime: null
+      });
+    }
+    
+    const metric = metrics.get(endpoint);
+    metric.totalRequests++;
+    metric.totalTime += responseTime;
+    metric.minTime = Math.min(metric.minTime, responseTime);
+    metric.maxTime = Math.max(metric.maxTime, responseTime);
+    metric.avgTime = Math.round(metric.totalTime / metric.totalRequests);
+    metric.lastRequestTime = new Date().toISOString();
+    
+    // Add response time header
+    res.set('X-Response-Time', `${responseTime}ms`);
+    
+    return originalJson(data);
+  };
+  
+  next();
+}
+
+// ==================== WEBHOOK/EVENT SYSTEM ====================
+
+// Store registered webhooks
+const webhooks = new Map();
+
+// Event emitter for webhooks
+const eventEmitter = {
+  listeners: {},
+  
+  on(event, callback) {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+    this.listeners[event].push(callback);
+  },
+  
+  emit(event, data) {
+    if (this.listeners[event]) {
+      this.listeners[event].forEach(callback => {
+        try {
+          callback(data);
+        } catch (error) {
+          console.error(`Error in webhook listener for ${event}:`, error.message);
+        }
+      });
+    }
+  }
+};
+
+// Function to trigger webhook
+function triggerWebhook(event, data) {
+  const webhookList = webhooks.get(event) || [];
+  webhookList.forEach(webhook => {
+    // Send webhook asynchronously
+    setTimeout(() => {
+      try {
+        const payload = {
+          event,
+          timestamp: new Date().toISOString(),
+          data
+        };
+        
+        // Log webhook trigger (in production, would send HTTP request)
+        console.log(`🔔 Webhook triggered: ${event}`, payload);
+        
+        // Emit event for internal listeners
+        eventEmitter.emit(event, payload);
+      } catch (error) {
+        console.error(`Error triggering webhook for ${event}:`, error.message);
+      }
+    }, 0);
+  });
+}
+
 // ==================== CACHING ====================
 
 // Simple in-memory cache
@@ -93,6 +194,9 @@ const adminLimiter = rateLimit({
 
 // Apply general rate limiter to all routes
 app.use(generalLimiter);
+
+// Apply metrics middleware
+app.use(metricsMiddleware);
 
 // Apply cache middleware to GET requests (5 minutes cache)
 app.use(cacheMiddleware(5 * 60 * 1000));
@@ -556,6 +660,10 @@ app.post('/api/products', (req, res) => {
 
   products.push(newProduct);
   clearCacheKey('GET:/api/products'); // Clear products cache
+  
+  // Trigger webhook
+  triggerWebhook('product.created', newProduct);
+  
   res.status(201).json({
     success: true,
     message: 'Product created successfully',
@@ -584,6 +692,10 @@ app.put('/api/products/:id', (req, res) => {
   if (rating) product.rating = rating;
 
   clearCacheKey('GET:/api/products'); // Clear products cache
+  
+  // Trigger webhook
+  triggerWebhook('product.updated', product);
+  
   res.json({
     success: true,
     message: 'Product updated successfully',
@@ -604,6 +716,10 @@ app.patch('/api/products/:id', (req, res) => {
   Object.assign(product, req.body);
   
   clearCacheKey('GET:/api/products'); // Clear products cache
+  
+  // Trigger webhook
+  triggerWebhook('product.updated', product);
+  
   res.json({
     success: true,
     message: 'Product updated successfully',
@@ -623,6 +739,10 @@ app.delete('/api/products/:id', (req, res) => {
 
   const deletedProduct = products.splice(index, 1);
   clearCacheKey('GET:/api/products'); // Clear products cache
+  
+  // Trigger webhook
+  triggerWebhook('product.deleted', deletedProduct[0]);
+  
   res.json({
     success: true,
     message: 'Product deleted successfully',
@@ -735,6 +855,10 @@ app.post('/api/users', (req, res) => {
 
   users.push(newUser);
   clearCacheKey('GET:/api/users'); // Clear users cache
+  
+  // Trigger webhook
+  triggerWebhook('user.created', newUser);
+  
   res.status(201).json({
     success: true,
     message: 'User created successfully',
@@ -760,6 +884,10 @@ app.put('/api/users/:id', (req, res) => {
   if (address) user.address = address;
 
   clearCacheKey('GET:/api/users'); // Clear users cache
+  
+  // Trigger webhook
+  triggerWebhook('user.updated', user);
+  
   res.json({
     success: true,
     message: 'User updated successfully',
@@ -780,6 +908,10 @@ app.patch('/api/users/:id', (req, res) => {
   Object.assign(user, req.body);
   
   clearCacheKey('GET:/api/users'); // Clear users cache
+  
+  // Trigger webhook
+  triggerWebhook('user.updated', user);
+  
   res.json({
     success: true,
     message: 'User updated successfully',
@@ -799,6 +931,10 @@ app.delete('/api/users/:id', (req, res) => {
 
   const deletedUser = users.splice(index, 1);
   clearCacheKey('GET:/api/users'); // Clear users cache
+  
+  // Trigger webhook
+  triggerWebhook('user.deleted', deletedUser[0]);
+  
   res.json({
     success: true,
     message: 'User deleted successfully',
@@ -918,6 +1054,10 @@ app.post('/api/orders', (req, res) => {
   };
 
   orders.push(newOrder);
+  
+  // Trigger webhook
+  triggerWebhook('order.created', newOrder);
+  
   res.status(201).json({
     success: true,
     message: 'Order created successfully',
@@ -944,6 +1084,10 @@ app.put('/api/orders/:id', (req, res) => {
   }
 
   clearCacheKey('GET:/api/orders'); // Clear orders cache
+  
+  // Trigger webhook
+  triggerWebhook('order.updated', order);
+  
   res.json({
     success: true,
     message: 'Order updated successfully',
@@ -968,6 +1112,10 @@ app.patch('/api/orders/:id', (req, res) => {
   }
 
   clearCacheKey('GET:/api/orders'); // Clear orders cache
+  
+  // Trigger webhook
+  triggerWebhook('order.updated', order);
+  
   res.json({
     success: true,
     message: 'Order updated successfully',
@@ -987,6 +1135,10 @@ app.delete('/api/orders/:id', (req, res) => {
 
   const deletedOrder = orders.splice(index, 1);
   clearCacheKey('GET:/api/orders'); // Clear orders cache
+  
+  // Trigger webhook
+  triggerWebhook('order.deleted', deletedOrder[0]);
+  
   res.json({
     success: true,
     message: 'Order deleted successfully',
@@ -1060,6 +1212,10 @@ app.post('/api/cart', (req, res) => {
   }
 
   clearCacheKey('GET:/api/cart'); // Clear cart cache
+  
+  // Trigger webhook
+  triggerWebhook('cart.updated', cart);
+  
   res.status(201).json({
     success: true,
     message: 'Item added to cart',
@@ -1101,6 +1257,10 @@ app.put('/api/cart/:productId', (req, res) => {
   }
 
   clearCacheKey('GET:/api/cart'); // Clear cart cache
+  
+  // Trigger webhook
+  triggerWebhook('cart.updated', cart);
+  
   res.json({
     success: true,
     message: 'Cart updated successfully',
@@ -1120,6 +1280,10 @@ app.delete('/api/cart/:productId', (req, res) => {
 
   const removedItem = cart.splice(index, 1);
   clearCacheKey('GET:/api/cart'); // Clear cart cache
+  
+  // Trigger webhook
+  triggerWebhook('cart.updated', cart);
+  
   res.json({
     success: true,
     message: 'Item removed from cart',
@@ -1131,9 +1295,153 @@ app.delete('/api/cart/:productId', (req, res) => {
 app.delete('/api/cart', (req, res) => {
   cart = [];
   clearCacheKey('GET:/api/cart'); // Clear cart cache
+  
+  // Trigger webhook
+  triggerWebhook('cart.cleared', { timestamp: new Date().toISOString() });
+  
   res.json({
     success: true,
     message: 'Cart cleared successfully'
+  });
+});
+
+// ==================== WEBHOOK MANAGEMENT ====================
+
+// GET all registered webhooks
+app.get('/api/webhooks', (req, res) => {
+  const webhookList = [];
+  webhooks.forEach((hooks, event) => {
+    hooks.forEach(hook => {
+      webhookList.push({
+        event,
+        url: hook.url,
+        active: hook.active,
+        createdAt: hook.createdAt
+      });
+    });
+  });
+  
+  res.json({
+    success: true,
+    data: webhookList,
+    total: webhookList.length
+  });
+});
+
+// POST register webhook
+app.post('/api/webhooks', (req, res) => {
+  const { event, url } = req.body;
+  
+  if (!event || !url) {
+    return res.status(400).json({
+      success: false,
+      message: 'Event and URL are required'
+    });
+  }
+
+  const validEvents = [
+    'product.created', 'product.updated', 'product.deleted',
+    'user.created', 'user.updated', 'user.deleted',
+    'order.created', 'order.updated', 'order.deleted',
+    'cart.updated', 'cart.cleared'
+  ];
+
+  if (!validEvents.includes(event)) {
+    return res.status(400).json({
+      success: false,
+      message: `Invalid event. Valid events: ${validEvents.join(', ')}`
+    });
+  }
+
+  const webhook = {
+    id: uuidv4(),
+    event,
+    url,
+    active: true,
+    createdAt: new Date().toISOString()
+  };
+
+  if (!webhooks.has(event)) {
+    webhooks.set(event, []);
+  }
+  webhooks.get(event).push(webhook);
+
+  res.status(201).json({
+    success: true,
+    message: 'Webhook registered successfully',
+    data: webhook
+  });
+});
+
+// DELETE unregister webhook
+app.delete('/api/webhooks/:id', (req, res) => {
+  let found = false;
+  
+  webhooks.forEach((hooks, event) => {
+    const index = hooks.findIndex(h => h.id === req.params.id);
+    if (index !== -1) {
+      const removed = hooks.splice(index, 1);
+      found = true;
+      res.json({
+        success: true,
+        message: 'Webhook unregistered successfully',
+        data: removed[0]
+      });
+    }
+  });
+
+  if (!found) {
+    res.status(404).json({
+      success: false,
+      message: 'Webhook not found'
+    });
+  }
+});
+
+// ==================== METRICS ENDPOINTS ====================
+
+// GET performance metrics
+app.get('/api/metrics', (req, res) => {
+  const metricsArray = Array.from(metrics.values());
+  
+  const summary = {
+    totalEndpoints: metricsArray.length,
+    totalRequests: metricsArray.reduce((sum, m) => sum + m.totalRequests, 0),
+    avgResponseTime: Math.round(
+      metricsArray.reduce((sum, m) => sum + m.avgTime, 0) / (metricsArray.length || 1)
+    ),
+    slowestEndpoint: metricsArray.length > 0 
+      ? metricsArray.reduce((max, m) => m.maxTime > max.maxTime ? m : max)
+      : null,
+    fastestEndpoint: metricsArray.length > 0
+      ? metricsArray.reduce((min, m) => m.minTime < min.minTime ? m : min)
+      : null
+  };
+
+  res.json({
+    success: true,
+    data: {
+      summary,
+      endpoints: metricsArray
+    }
+  });
+});
+
+// GET metrics for specific endpoint
+app.get('/api/metrics/:method/:path', (req, res) => {
+  const endpoint = `${req.params.method.toUpperCase()} /${req.params.path}`;
+  const metric = metrics.get(endpoint);
+  
+  if (!metric) {
+    return res.status(404).json({
+      success: false,
+      message: 'Metrics not found for this endpoint'
+    });
+  }
+
+  res.json({
+    success: true,
+    data: metric
   });
 });
 
@@ -1358,6 +1666,9 @@ app.post('/api/auth/register', authLimiter, (req, res) => {
 
   // Generate token
   const token = Buffer.from(`${newUser.id}:${Date.now()}`).toString('base64');
+
+  // Trigger webhook
+  triggerWebhook('user.created', newUser);
 
   res.status(201).json({
     success: true,
