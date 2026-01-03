@@ -18,7 +18,7 @@ A complete REST API for e-commerce platform with 25+ endpoints, HTML testing das
 - ✅ **Authentication** - Login, Register, Token Verification
 - ✅ **Advanced Queries** - Pagination, Filtering, Sorting, Search
 - ✅ **Rate Limiting** - Protect API from abuse
-- ✅ **Swagger/OpenAPI** - Interactive API documentation
+- ✅ **Caching** - In-memory caching for better performance
 - ✅ **Admin Controls** - Test data reset and seeding
 - ✅ **HTML Dashboard** - Beautiful testing interface
 - ✅ **Error Handling** - Comprehensive error responses
@@ -116,6 +116,65 @@ GET    /api/meta                  # Get API meta information
 POST   /api/admin/reset           # Reset data on demand (requires x-admin-key)
 POST   /api/admin/seed            # Seed data with scenarios (requires x-admin-key)
 ```
+
+---
+
+## 🚦 Rate Limiting
+
+API dilindungi dengan rate limiting untuk mencegah abuse dan spam.
+
+**Rate Limits:**
+
+| Endpoint | Limit | Window |
+|----------|-------|--------|
+| General endpoints | 100 requests | 15 minutes |
+| Auth (login/register) | 5 requests | 15 minutes |
+| Admin endpoints | 10 requests | 1 hour |
+
+**Response saat rate limit tercapai:**
+```json
+{
+  "message": "Too many requests from this IP, please try again later."
+}
+```
+
+**Headers yang dikembalikan:**
+```
+RateLimit-Limit: 100
+RateLimit-Remaining: 95
+RateLimit-Reset: 1704283200
+```
+
+---
+
+## ⚡ Caching
+
+API menggunakan in-memory caching untuk meningkatkan performa dan mengurangi beban server.
+
+**Cache Configuration:**
+- **Duration**: 5 minutes (300 seconds)
+- **Scope**: GET requests only
+- **Auto-clear**: Saat data dimodifikasi (POST, PUT, PATCH, DELETE)
+
+**Cache Headers:**
+```
+X-Cache: HIT    # Response dari cache
+X-Cache: MISS   # Response dari database
+```
+
+**Contoh:**
+```
+GET /api/products?page=1&limit=10
+Response Header: X-Cache: MISS (first request)
+
+GET /api/products?page=1&limit=10
+Response Header: X-Cache: HIT (cached response)
+```
+
+**Cache Invalidation:**
+- Otomatis saat ada POST/PUT/PATCH/DELETE
+- Otomatis saat `/api/admin/reset` dipanggil
+- Otomatis saat `/api/admin/seed` dipanggil
 
 ---
 

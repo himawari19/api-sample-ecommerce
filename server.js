@@ -7,6 +7,59 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ==================== CACHING ====================
+
+// Simple in-memory cache
+const cache = new Map();
+
+// Cache middleware
+function cacheMiddleware(duration = 5 * 60 * 1000) { // 5 minutes default
+  return (req, res, next) => {
+    // Only cache GET requests
+    if (req.method !== 'GET') {
+      return next();
+    }
+
+    const key = `${req.method}:${req.originalUrl}`;
+    const cachedData = cache.get(key);
+
+    if (cachedData && Date.now() < cachedData.expiry) {
+      res.set('X-Cache', 'HIT');
+      return res.json(cachedData.data);
+    }
+
+    // Store original res.json
+    const originalJson = res.json.bind(res);
+
+    // Override res.json to cache the response
+    res.json = function(data) {
+      cache.set(key, {
+        data: data,
+        expiry: Date.now() + duration
+      });
+      res.set('X-Cache', 'MISS');
+      return originalJson(data);
+    };
+
+    next();
+  };
+}
+
+// Clear cache function
+function clearCache() {
+  cache.clear();
+  console.log('✅ Cache cleared');
+}
+
+// Clear specific cache key
+function clearCacheKey(pattern) {
+  for (let key of cache.keys()) {
+    if (key.includes(pattern)) {
+      cache.delete(key);
+    }
+  }
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -40,6 +93,9 @@ const adminLimiter = rateLimit({
 
 // Apply general rate limiter to all routes
 app.use(generalLimiter);
+
+// Apply cache middleware to GET requests (5 minutes cache)
+app.use(cacheMiddleware(5 * 60 * 1000));
 
 // In-memory database
 let products = [
@@ -377,6 +433,7 @@ function resetData() {
   ];
 
   cart = [];
+  clearCache(); // Clear cache when data is reset
   console.log('✅ Data reset to initial state');
 }
 
@@ -498,6 +555,7 @@ app.post('/api/products', (req, res) => {
   };
 
   products.push(newProduct);
+  clearCacheKey('GET:/api/products'); // Clear products cache
   res.status(201).json({
     success: true,
     message: 'Product created successfully',
@@ -525,6 +583,7 @@ app.put('/api/products/:id', (req, res) => {
   if (image) product.image = image;
   if (rating) product.rating = rating;
 
+  clearCacheKey('GET:/api/products'); // Clear products cache
   res.json({
     success: true,
     message: 'Product updated successfully',
@@ -544,6 +603,7 @@ app.patch('/api/products/:id', (req, res) => {
 
   Object.assign(product, req.body);
   
+  clearCacheKey('GET:/api/products'); // Clear products cache
   res.json({
     success: true,
     message: 'Product updated successfully',
@@ -562,6 +622,7 @@ app.delete('/api/products/:id', (req, res) => {
   }
 
   const deletedProduct = products.splice(index, 1);
+  clearCacheKey('GET:/api/products'); // Clear products cache
   res.json({
     success: true,
     message: 'Product deleted successfully',
@@ -673,6 +734,7 @@ app.post('/api/users', (req, res) => {
   };
 
   users.push(newUser);
+  clearCacheKey('GET:/api/users'); // Clear users cache
   res.status(201).json({
     success: true,
     message: 'User created successfully',
@@ -697,6 +759,7 @@ app.put('/api/users/:id', (req, res) => {
   if (phone) user.phone = phone;
   if (address) user.address = address;
 
+  clearCacheKey('GET:/api/users'); // Clear users cache
   res.json({
     success: true,
     message: 'User updated successfully',
@@ -716,6 +779,7 @@ app.patch('/api/users/:id', (req, res) => {
 
   Object.assign(user, req.body);
   
+  clearCacheKey('GET:/api/users'); // Clear users cache
   res.json({
     success: true,
     message: 'User updated successfully',
@@ -734,6 +798,7 @@ app.delete('/api/users/:id', (req, res) => {
   }
 
   const deletedUser = users.splice(index, 1);
+  clearCacheKey('GET:/api/users'); // Clear users cache
   res.json({
     success: true,
     message: 'User deleted successfully',
@@ -878,6 +943,7 @@ app.put('/api/orders/:id', (req, res) => {
     order.totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   }
 
+  clearCacheKey('GET:/api/orders'); // Clear orders cache
   res.json({
     success: true,
     message: 'Order updated successfully',
@@ -901,6 +967,7 @@ app.patch('/api/orders/:id', (req, res) => {
     order.totalPrice = req.body.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   }
 
+  clearCacheKey('GET:/api/orders'); // Clear orders cache
   res.json({
     success: true,
     message: 'Order updated successfully',
@@ -919,6 +986,7 @@ app.delete('/api/orders/:id', (req, res) => {
   }
 
   const deletedOrder = orders.splice(index, 1);
+  clearCacheKey('GET:/api/orders'); // Clear orders cache
   res.json({
     success: true,
     message: 'Order deleted successfully',
@@ -991,6 +1059,7 @@ app.post('/api/cart', (req, res) => {
     });
   }
 
+  clearCacheKey('GET:/api/cart'); // Clear cart cache
   res.status(201).json({
     success: true,
     message: 'Item added to cart',
@@ -1031,6 +1100,7 @@ app.put('/api/cart/:productId', (req, res) => {
     cartItem.quantity = quantity;
   }
 
+  clearCacheKey('GET:/api/cart'); // Clear cart cache
   res.json({
     success: true,
     message: 'Cart updated successfully',
@@ -1049,6 +1119,7 @@ app.delete('/api/cart/:productId', (req, res) => {
   }
 
   const removedItem = cart.splice(index, 1);
+  clearCacheKey('GET:/api/cart'); // Clear cart cache
   res.json({
     success: true,
     message: 'Item removed from cart',
@@ -1059,6 +1130,7 @@ app.delete('/api/cart/:productId', (req, res) => {
 // DELETE clear cart
 app.delete('/api/cart', (req, res) => {
   cart = [];
+  clearCacheKey('GET:/api/cart'); // Clear cart cache
   res.json({
     success: true,
     message: 'Cart cleared successfully'
