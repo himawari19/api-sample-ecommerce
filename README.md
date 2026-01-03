@@ -1716,7 +1716,7 @@ npm start
 
 ---
 
-**Last Updated**: January 2024
+**Last Updated**: January 2026
 
 **Repository**: https://github.com/himawari19/api-sample-ecommerce
 

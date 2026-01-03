@@ -172,11 +172,11 @@ function clearCacheKey(pattern) {
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
+      defaultSrc: ["'self'", "http://localhost:*", "https://api-sample-ecommerce.vercel.app"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "http://localhost:*"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https:"],
+      imgSrc: ["'self'", "data:", "https:", "http:"],
+      connectSrc: ["'self'", "https:", "http://localhost:*", "https://api-sample-ecommerce.vercel.app"],
       fontSrc: ["'self'", "data:"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
