@@ -1,0 +1,2636 @@
+{
+	"info": {
+		"_postman_id": "e8c5a437-dfa2-427c-8acb-5c44f6182671",
+		"name": "API SAMPLE COLLECTIONS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "51086499",
+		"_collection_link": "https://wahyucheger51-1699588.postman.co/workspace/a158636e-2785-43ae-8d8c-850c4a75545c/collection/51086499-e8c5a437-dfa2-427c-8acb-5c44f6182671?action=share&source=collection_link&creator=51086499"
+	},
+	"item": [
+		{
+			"name": "Cart API",
+			"item": [
+				{
+					"name": "Get Cart",
+					"item": [
+						{
+							"name": "Get Cart - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Response has cart data', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data).to.be.an('array');",
+											"  pm.expect(jsonData.total).to.exist;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/cart",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add to Cart",
+					"item": [
+						{
+							"name": "Add to Cart - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', function() {",
+											"  pm.response.to.have.status(201);",
+											"});",
+											"pm.test('Item is added to cart', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data).to.be.an('array');",
+											"  var item = jsonData.data.find(i => i.productId === 'laptop-gaming');",
+											"  pm.expect(item).to.exist;",
+											"  pm.expect(item.quantity).to.equal(1);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"productId\": \"laptop-gaming\",\n  \"quantity\": 1\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/cart",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add to Cart - Negative (Missing ProductId)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('required');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"quantity\": 1\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/cart",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add to Cart - Negative (Invalid Quantity)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message mentions quantity', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('greater than 0');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\\n  \\\"productId\\\": \\\"laptop-gaming\\\",\\n  \\\"quantity\\\": 0\\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/cart",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add to Cart - Negative (Product Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('not found');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"productId\": \"invalid-product\",\n  \"quantity\": 1\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/cart",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add to Cart - Negative (Exceeds Stock)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message mentions stock', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('exceeds');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"productId\": \"laptop-gaming\",\n  \"quantity\": 1000\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/cart",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update Cart Item",
+					"item": [
+						{
+							"name": "Update Cart Item - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Cart item quantity is updated', function() {",
+											"  var jsonData = pm.response.json();",
+											"  var item = jsonData.data.find(i => i.productId === 'smartphone-pro');",
+											"  pm.expect(item).to.exist;",
+											"  pm.expect(item.quantity).to.equal(2);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"quantity\": 2\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/cart/smartphone-pro",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart",
+										"smartphone-pro"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Cart Item - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"quantity\": 2\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/cart/invalid-product",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart",
+										"invalid-product"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Remove from Cart",
+					"item": [
+						{
+							"name": "Remove from Cart - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Item is removed from cart', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.true;",
+											"  pm.expect(jsonData.message).to.include('removed');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/cart/wireless-headphones",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart",
+										"wireless-headphones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove from Cart - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/cart/invalid-product",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart",
+										"invalid-product"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Clear Cart",
+					"item": [
+						{
+							"name": "Clear Cart - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Cart is cleared', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.true;",
+											"  pm.expect(jsonData.message).to.include('cleared');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/cart",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"cart"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "E-Commerce API",
+			"item": [
+				{
+					"name": "Health & Meta",
+					"item": [
+						{
+							"name": "Health Check - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Response has success flag', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.true;",
+											"});",
+											"pm.test('Response has message', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.message).to.equal('API is running');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/health",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Meta Info - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Response contains API version', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.apiVersion).to.exist;",
+											"});",
+											"pm.test('Response contains data state', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.dataState).to.exist;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/meta",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"meta"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "Register - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', function() {",
+											"  pm.response.to.have.status(201);",
+											"});",
+											"pm.test('Response has token', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.token).to.exist;",
+											"});",
+											"pm.test('User data is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.user.email).to.equal(pm.environment.get('test_email'));",
+											"});",
+											"pm.environment.set('auth_token', pm.response.json().data.token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"testuser{{$timestamp}}@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"08123456789\",\n  \"address\": \"Test Address\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/auth/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register - Negative (Missing Email)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('required');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Test User\",\n  \"password\": \"password123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/auth/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Token is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.token).to.exist;",
+											"});",
+											"pm.environment.set('auth_token', pm.response.json().data.token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login - Negative (Wrong Password)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 401', function() {",
+											"  pm.response.to.have.status(401);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Token - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Token is valid', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.user).to.exist;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/auth/verify",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"verify"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Token - Negative (No Token)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 401', function() {",
+											"  pm.response.to.have.status(401);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/auth/verify",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"verify"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Orders API",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"item": [
+						{
+							"name": "Get All Orders - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Response has orders array', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data).to.be.an('array');",
+											"  pm.expect(jsonData.data.length).to.be.greaterThan(0);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Filter Orders by Status - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('All orders have pending status', function() {",
+											"  var jsonData = pm.response.json();",
+											"  jsonData.data.forEach(function(order) {",
+											"    pm.expect(order.status).to.equal('pending');",
+											"  });",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders?status=pending",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "pending"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Filter Orders by User - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('All orders belong to specified user', function() {",
+											"  var jsonData = pm.response.json();",
+											"  jsonData.data.forEach(function(order) {",
+											"    pm.expect(order.userId).to.equal('john-doe');",
+											"  });",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders?userId=john-doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "john-doe"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get Order by ID",
+					"item": [
+						{
+							"name": "Get Order by ID - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Order has required fields', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.id).to.exist;",
+											"  pm.expect(jsonData.data.userId).to.exist;",
+											"  pm.expect(jsonData.data.items).to.be.an('array');",
+											"  pm.expect(jsonData.data.totalPrice).to.exist;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/order-laptop-gaming-001",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"order-laptop-gaming-001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Order by ID - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/invalid-order-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"invalid-order-id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create Order",
+					"item": [
+						{
+							"name": "Create Order - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', function() {",
+											"  pm.response.to.have.status(201);",
+											"});",
+											"pm.test('Order is created with correct data', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.userId).to.equal('john-doe');",
+											"  pm.expect(jsonData.data.items).to.be.an('array');",
+											"  pm.expect(jsonData.data.status).to.equal('pending');",
+											"  pm.expect(jsonData.data.id).to.exist;",
+											"});",
+											"pm.environment.set('created_order_id', pm.response.json().data.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"john-doe\",\n  \"items\": [\n    {\n      \"productId\": \"laptop-gaming\",\n      \"quantity\": 1,\n      \"price\": 15000000\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/orders",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Order - Negative (Missing UserId)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('required');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"items\": [\n    {\n      \"productId\": \"laptop-gaming\",\n      \"quantity\": 1,\n      \"price\": 15000000\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/orders",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Order - Negative (Empty Items)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"john-doe\",\n  \"items\": []\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/orders",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update Order",
+					"item": [
+						{
+							"name": "Update Order Status - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Order status is updated', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.status).to.equal('shipped');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"shipped\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/orders/order-laptop-gaming-001",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"order-laptop-gaming-001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Order - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"delivered\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/orders/invalid-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"invalid-id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete Order",
+					"item": [
+						{
+							"name": "Delete Order - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Order is deleted', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.true;",
+											"  pm.expect(jsonData.message).to.include('deleted');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/{{created_order_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"{{created_order_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Order - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/invalid-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"invalid-id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Products API",
+			"item": [
+				{
+					"name": "Get All Products",
+					"item": [
+						{
+							"name": "Get All Products - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Response has data array', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data).to.be.an('array');",
+											"});",
+											"pm.test('Response has meta information', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.meta).to.exist;",
+											"  pm.expect(jsonData.meta.pagination).to.exist;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Products with Pagination - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Pagination works correctly', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.meta.pagination.page).to.equal(2);",
+											"  pm.expect(jsonData.meta.pagination.limit).to.equal(5);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products?page=2&limit=5",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2"
+										},
+										{
+											"key": "limit",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search Products - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Search results contain keyword', function() {",
+											"  var jsonData = pm.response.json();",
+											"  jsonData.data.forEach(function(product) {",
+											"    pm.expect(product.name.toLowerCase() + product.category.toLowerCase()).to.include('laptop');",
+											"  });",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products?q=laptop",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "laptop"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Filter by Category - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('All products are in Electronics category', function() {",
+											"  var jsonData = pm.response.json();",
+											"  jsonData.data.forEach(function(product) {",
+											"    pm.expect(product.category).to.equal('Electronics');",
+											"  });",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products?category=Electronics",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									],
+									"query": [
+										{
+											"key": "category",
+											"value": "Electronics"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Filter by Price Range - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('All products are within price range', function() {",
+											"  var jsonData = pm.response.json();",
+											"  jsonData.data.forEach(function(product) {",
+											"    pm.expect(product.price).to.be.at.least(1000000);",
+											"    pm.expect(product.price).to.be.at.most(5000000);",
+											"  });",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products?minPrice=1000000&maxPrice=5000000",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									],
+									"query": [
+										{
+											"key": "minPrice",
+											"value": "1000000"
+										},
+										{
+											"key": "maxPrice",
+											"value": "5000000"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sort Products - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Products are sorted by price ascending', function() {",
+											"  var jsonData = pm.response.json();",
+											"  for (var i = 0; i < jsonData.data.length - 1; i++) {",
+											"    pm.expect(jsonData.data[i].price).to.be.at.most(jsonData.data[i + 1].price);",
+											"  }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products?sort=price&order=asc",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "price"
+										},
+										{
+											"key": "order",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get Product by ID",
+					"item": [
+						{
+							"name": "Get Product by ID - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Product has required fields', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.id).to.exist;",
+											"  pm.expect(jsonData.data.name).to.exist;",
+											"  pm.expect(jsonData.data.price).to.exist;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products/laptop-gaming",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"laptop-gaming"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Product by ID - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('not found');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products/invalid-product-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"invalid-product-id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create Product",
+					"item": [
+						{
+							"name": "Create Product - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', function() {",
+											"  pm.response.to.have.status(201);",
+											"});",
+											"pm.test('Product is created with correct data', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.name).to.equal('New Product');",
+											"  pm.expect(jsonData.data.price).to.equal(500000);",
+											"  pm.expect(jsonData.data.id).to.exist;",
+											"});",
+											"pm.environment.set('created_product_id', pm.response.json().data.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"New Product\",\n  \"price\": 500000,\n  \"category\": \"Electronics\",\n  \"stock\": 50,\n  \"description\": \"Test product\",\n  \"rating\": 4.5\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/products",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product - Negative (Missing Name)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('required');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"price\": 500000,\n  \"category\": \"Electronics\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/products",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product - Negative (Missing Price)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message mentions required fields', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Product\",\n  \"category\": \"Electronics\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/products",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update Product",
+					"item": [
+						{
+							"name": "Update Product (PUT) - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Product is updated correctly', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.name).to.equal('Updated Laptop');",
+											"  pm.expect(jsonData.data.price).to.equal(16000000);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Updated Laptop\",\n  \"price\": 16000000,\n  \"category\": \"Electronics\",\n  \"stock\": 15\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/products/laptop-gaming",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"laptop-gaming"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Product (PATCH) - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Product stock is updated', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.stock).to.equal(20);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"stock\": 20\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/products/laptop-gaming",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"laptop-gaming"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Product - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Updated\",\n  \"price\": 1000000\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/products/invalid-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"invalid-id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete Product",
+					"item": [
+						{
+							"name": "Delete Product - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Product is deleted', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.true;",
+											"  pm.expect(jsonData.message).to.include('deleted');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products/{{created_product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"{{created_product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products/invalid-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"invalid-id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Users API",
+			"item": [
+				{
+					"name": "Get All Users",
+					"item": [
+						{
+							"name": "Get All Users - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Response has users array', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data).to.be.an('array');",
+											"  pm.expect(jsonData.data.length).to.be.greaterThan(0);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search Users - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Search results contain keyword', function() {",
+											"  var jsonData = pm.response.json();",
+											"  jsonData.data.forEach(function(user) {",
+											"    var match = user.name.toLowerCase().includes('john') || user.email.toLowerCase().includes('john');",
+											"    pm.expect(match).to.be.true;",
+											"  });",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users?q=john",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "john"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get User by ID",
+					"item": [
+						{
+							"name": "Get User by ID - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('User has required fields', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.id).to.exist;",
+											"  pm.expect(jsonData.data.name).to.exist;",
+											"  pm.expect(jsonData.data.email).to.exist;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/john-doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john-doe"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User by ID - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/invalid-user-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"invalid-user-id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create User",
+					"item": [
+						{
+							"name": "Create User - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', function() {",
+											"  pm.response.to.have.status(201);",
+											"});",
+											"pm.test('User is created with correct data', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.name).to.equal('New User');",
+											"  pm.expect(jsonData.data.email).to.equal('newuser@example.com');",
+											"  pm.expect(jsonData.data.id).to.exist;",
+											"});",
+											"pm.environment.set('created_user_id', pm.response.json().data.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"New User\",\n  \"email\": \"newuser{{$timestamp}}@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"08123456789\",\n  \"address\": \"Test Address\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User - Negative (Duplicate Email)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message mentions duplicate email', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('already exists');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Duplicate User\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User - Negative (Missing Email)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 400', function() {",
+											"  pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"  pm.expect(jsonData.message).to.include('required');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Test User\",\n  \"password\": \"password123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update User",
+					"item": [
+						{
+							"name": "Update User (PUT) - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('User is updated correctly', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.name).to.equal('Updated Name');",
+											"  pm.expect(jsonData.data.phone).to.equal('08999999999');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"08999999999\",\n  \"address\": \"Updated Address\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/john-doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john-doe"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update User (PATCH) - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('User phone is updated', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.data.phone).to.equal('08888888888');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"phone\": \"08888888888\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/john-doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john-doe"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update User - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Updated\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/invalid-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"invalid-id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete User",
+					"item": [
+						{
+							"name": "Delete User - Positive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function() {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"pm.test('User is deleted', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.true;",
+											"  pm.expect(jsonData.message).to.include('deleted');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/{{created_user_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"{{created_user_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User - Negative (Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 404', function() {",
+											"  pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Error message is returned', function() {",
+											"  var jsonData = pm.response.json();",
+											"  pm.expect(jsonData.success).to.be.false;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/invalid-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"invalid-id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

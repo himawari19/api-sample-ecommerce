@@ -3,9 +3,15 @@ const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const compression = require('compression');
+const helmet = require('helmet');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const BCRYPT_ROUNDS = 10;
 
 // ==================== RESPONSE TIME METRICS ====================
 
@@ -157,13 +163,19 @@ function clearCacheKey(pattern) {
   for (let key of cache.keys()) {
     if (key.includes(pattern)) {
       cache.delete(key);
+      console.log(`🗑️ Cache cleared: ${key}`);
     }
   }
 }
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(helmet()); // Security headers
+app.use(compression()); // Compression
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true
+}));
+app.use(express.json({ limit: '10mb' })); // Request size limit
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ==================== RATE LIMITING ====================
@@ -173,8 +185,8 @@ const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
   message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // Strict rate limiter for auth endpoints: 5 requests per 15 minutes per IP
@@ -182,7 +194,7 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
   message: 'Too many login/register attempts, please try again later.',
-  skipSuccessfulRequests: true, // Don't count successful requests
+  skipSuccessfulRequests: true,
 });
 
 // Admin limiter: 10 requests per hour per IP
@@ -200,6 +212,50 @@ app.use(metricsMiddleware);
 
 // Apply cache middleware to GET requests (5 minutes cache)
 app.use(cacheMiddleware(5 * 60 * 1000));
+
+// ==================== VALIDATION HELPERS ====================
+
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validatePhone = (phone) => {
+  const phoneRegex = /^(\+62|0)[0-9]{9,12}$/;
+  return phoneRegex.test(phone);
+};
+
+const validatePrice = (price) => {
+  return typeof price === 'number' && price > 0;
+};
+
+const validateRating = (rating) => {
+  return typeof rating === 'number' && rating >= 0 && rating <= 5;
+};
+
+const validateURL = (url) => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const validateStatus = (status) => {
+  return ['pending', 'shipped', 'delivered', 'cancelled'].includes(status);
+};
+
+// ==================== ERROR HANDLING MIDDLEWARE ====================
+
+app.use((err, req, res, next) => {
+  console.error('❌ Error:', err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? err : {}
+  });
+});
 
 // In-memory database
 let products = [
@@ -637,38 +693,81 @@ app.get('/api/products/:id', (req, res) => {
 
 // POST create product
 app.post('/api/products', (req, res) => {
-  const { name, price, category, stock, description, image, rating } = req.body;
-  
-  if (!name || !price || !category) {
-    return res.status(400).json({
+  try {
+    const { name, price, category, stock, description, image, rating } = req.body;
+    
+    if (!name || !price || !category) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, price, and category are required'
+      });
+    }
+
+    // Validation
+    if (typeof name !== 'string' || name.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name must be a non-empty string'
+      });
+    }
+
+    if (!validatePrice(price)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Price must be a positive number'
+      });
+    }
+
+    if (stock !== undefined && (typeof stock !== 'number' || stock < 0)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Stock must be a non-negative number'
+      });
+    }
+
+    if (rating !== undefined && !validateRating(rating)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Rating must be between 0 and 5'
+      });
+    }
+
+    if (image && !validateURL(image)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Image must be a valid URL'
+      });
+    }
+
+    const newProduct = {
+      id: uuidv4(),
+      name: name.trim(),
+      price,
+      category,
+      stock: stock || 0,
+      description: description || '',
+      image: image || 'https://via.placeholder.com/300x300?text=Product',
+      rating: rating || 0,
+      createdAt: new Date()
+    };
+
+    products.push(newProduct);
+    clearCacheKey('GET:/api/products');
+    
+    triggerWebhook('product.created', newProduct);
+    
+    res.status(201).json({
+      success: true,
+      message: 'Product created successfully',
+      data: newProduct
+    });
+  } catch (error) {
+    console.error('Error creating product:', error);
+    res.status(500).json({
       success: false,
-      message: 'Name, price, and category are required'
+      message: 'Error creating product'
     });
   }
-
-  const newProduct = {
-    id: uuidv4(),
-    name,
-    price,
-    category,
-    stock: stock || 0,
-    description: description || '',
-    image: image || 'https://via.placeholder.com/300x300?text=Product',
-    rating: rating || 0,
-    createdAt: new Date()
-  };
-
-  products.push(newProduct);
-  clearCacheKey('GET:/api/products'); // Clear products cache
-  
-  // Trigger webhook
-  triggerWebhook('product.created', newProduct);
-  
-  res.status(201).json({
-    success: true,
-    message: 'Product created successfully',
-    data: newProduct
-  });
 });
 
 // PUT update product
@@ -826,44 +925,82 @@ app.get('/api/users/:id', (req, res) => {
 
 // POST create user
 app.post('/api/users', (req, res) => {
-  const { name, email, password, phone, address } = req.body;
-  
-  if (!name || !email || !password) {
-    return res.status(400).json({
+  try {
+    const { name, email, password, phone, address } = req.body;
+    
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, email, and password are required'
+      });
+    }
+
+    if (!validateEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email format'
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters'
+      });
+    }
+
+    if (phone && !validatePhone(phone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid phone format'
+      });
+    }
+
+    const emailExists = users.find(u => u.email === email);
+    if (emailExists) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email already exists'
+      });
+    }
+
+    // Hash password with bcrypt
+    const hashedPassword = bcrypt.hashSync(password, BCRYPT_ROUNDS);
+
+    const newUser = {
+      id: uuidv4(),
+      name: name.trim(),
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      phone: phone || '',
+      address: address || '',
+      createdAt: new Date()
+    };
+
+    users.push(newUser);
+    clearCacheKey('GET:/api/users');
+    
+    triggerWebhook('user.created', newUser);
+    
+    res.status(201).json({
+      success: true,
+      message: 'User created successfully',
+      data: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        phone: newUser.phone,
+        address: newUser.address,
+        createdAt: newUser.createdAt
+      }
+    });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({
       success: false,
-      message: 'Name, email, and password are required'
+      message: 'Error creating user'
     });
   }
-
-  const emailExists = users.find(u => u.email === email);
-  if (emailExists) {
-    return res.status(400).json({
-      success: false,
-      message: 'Email already exists'
-    });
-  }
-
-  const newUser = {
-    id: uuidv4(),
-    name,
-    email,
-    password,
-    phone: phone || '',
-    address: address || '',
-    createdAt: new Date()
-  };
-
-  users.push(newUser);
-  clearCacheKey('GET:/api/users'); // Clear users cache
-  
-  // Trigger webhook
-  triggerWebhook('user.created', newUser);
-  
-  res.status(201).json({
-    success: true,
-    message: 'User created successfully',
-    data: newUser
-  });
 });
 
 // PUT update user
@@ -946,6 +1083,7 @@ app.delete('/api/users/:id', (req, res) => {
 
 // GET all orders
 app.get('/api/orders', (req, res) => {
+  const startTime = Date.now();
   let filtered = [...orders];
 
   // Filter by status
@@ -1054,6 +1192,7 @@ app.post('/api/orders', (req, res) => {
   };
 
   orders.push(newOrder);
+  clearCacheKey('GET:/api/orders'); // Clear orders cache
   
   // Trigger webhook
   triggerWebhook('order.created', newOrder);
@@ -1067,32 +1206,52 @@ app.post('/api/orders', (req, res) => {
 
 // PUT update order
 app.put('/api/orders/:id', (req, res) => {
-  const order = orders.find(o => o.id === req.params.id);
-  if (!order) {
-    return res.status(404).json({
+  try {
+    const order = orders.find(o => o.id === req.params.id);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    const { status, items } = req.body;
+    
+    if (status && !validateStatus(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid status. Must be: pending, shipped, delivered, or cancelled'
+      });
+    }
+
+    if (status) order.status = status;
+    if (items) {
+      if (!Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Items must be a non-empty array'
+        });
+      }
+      order.items = items;
+      order.totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    }
+
+    clearCacheKey('GET:/api/orders');
+    
+    triggerWebhook('order.updated', order);
+    
+    res.json({
+      success: true,
+      message: 'Order updated successfully',
+      data: order
+    });
+  } catch (error) {
+    console.error('Error updating order:', error);
+    res.status(500).json({
       success: false,
-      message: 'Order not found'
+      message: 'Error updating order'
     });
   }
-
-  const { status, items } = req.body;
-  
-  if (status) order.status = status;
-  if (items) {
-    order.items = items;
-    order.totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  }
-
-  clearCacheKey('GET:/api/orders'); // Clear orders cache
-  
-  // Trigger webhook
-  triggerWebhook('order.updated', order);
-  
-  res.json({
-    success: true,
-    message: 'Order updated successfully',
-    data: order
-  });
 });
 
 // PATCH partial update order
@@ -1293,16 +1452,23 @@ app.delete('/api/cart/:productId', (req, res) => {
 
 // DELETE clear cart
 app.delete('/api/cart', (req, res) => {
-  cart = [];
-  clearCacheKey('GET:/api/cart'); // Clear cart cache
-  
-  // Trigger webhook
-  triggerWebhook('cart.cleared', { timestamp: new Date().toISOString() });
-  
-  res.json({
-    success: true,
-    message: 'Cart cleared successfully'
-  });
+  try {
+    cart.splice(0, cart.length); // Clear array properly
+    clearCacheKey('GET:/api/cart');
+    
+    triggerWebhook('cart.cleared', { timestamp: new Date().toISOString() });
+    
+    res.json({
+      success: true,
+      message: 'Cart cleared successfully'
+    });
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error clearing cart'
+    });
+  }
 });
 
 // ==================== WEBHOOK MANAGEMENT ====================
@@ -1330,47 +1496,64 @@ app.get('/api/webhooks', (req, res) => {
 
 // POST register webhook
 app.post('/api/webhooks', (req, res) => {
-  const { event, url } = req.body;
-  
-  if (!event || !url) {
-    return res.status(400).json({
+  try {
+    const { event, url } = req.body;
+    
+    if (!event || !url) {
+      return res.status(400).json({
+        success: false,
+        message: 'Event and URL are required'
+      });
+    }
+
+    if (!validateURL(url)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid URL format'
+      });
+    }
+
+    const validEvents = [
+      'product.created', 'product.updated', 'product.deleted',
+      'user.created', 'user.updated', 'user.deleted',
+      'order.created', 'order.updated', 'order.deleted',
+      'cart.updated', 'cart.cleared'
+    ];
+
+    if (!validEvents.includes(event)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid event. Valid events: ${validEvents.join(', ')}`
+      });
+    }
+
+    const webhook = {
+      id: uuidv4(),
+      event,
+      url,
+      active: true,
+      createdAt: new Date().toISOString()
+    };
+
+    if (!webhooks.has(event)) {
+      webhooks.set(event, []);
+    }
+    webhooks.get(event).push(webhook);
+
+    clearCacheKey('GET:/api/webhooks');
+
+    res.status(201).json({
+      success: true,
+      message: 'Webhook registered successfully',
+      data: webhook
+    });
+  } catch (error) {
+    console.error('Error registering webhook:', error);
+    res.status(500).json({
       success: false,
-      message: 'Event and URL are required'
+      message: 'Error registering webhook'
     });
   }
-
-  const validEvents = [
-    'product.created', 'product.updated', 'product.deleted',
-    'user.created', 'user.updated', 'user.deleted',
-    'order.created', 'order.updated', 'order.deleted',
-    'cart.updated', 'cart.cleared'
-  ];
-
-  if (!validEvents.includes(event)) {
-    return res.status(400).json({
-      success: false,
-      message: `Invalid event. Valid events: ${validEvents.join(', ')}`
-    });
-  }
-
-  const webhook = {
-    id: uuidv4(),
-    event,
-    url,
-    active: true,
-    createdAt: new Date().toISOString()
-  };
-
-  if (!webhooks.has(event)) {
-    webhooks.set(event, []);
-  }
-  webhooks.get(event).push(webhook);
-
-  res.status(201).json({
-    success: true,
-    message: 'Webhook registered successfully',
-    data: webhook
-  });
 });
 
 // DELETE unregister webhook
@@ -1382,6 +1565,7 @@ app.delete('/api/webhooks/:id', (req, res) => {
     if (index !== -1) {
       const removed = hooks.splice(index, 1);
       found = true;
+      clearCacheKey('GET:/api/webhooks'); // Clear webhooks cache
       res.json({
         success: true,
         message: 'Webhook unregistered successfully',
@@ -1597,93 +1781,157 @@ app.get('/api/meta', (req, res) => {
 
 // POST login user
 app.post('/api/auth/login', authLimiter, (req, res) => {
-  const { email, password } = req.body;
-  
-  if (!email || !password) {
-    return res.status(400).json({
-      success: false,
-      message: 'Email and password are required'
-    });
-  }
-
-  const user = users.find(u => u.email === email && u.password === password);
-  if (!user) {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid email or password'
-    });
-  }
-
-  // Generate simple token (in production, use JWT)
-  const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
-
-  res.json({
-    success: true,
-    message: 'Login successful',
-    data: {
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        address: user.address
-      }
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required'
+      });
     }
-  });
+
+    if (!validateEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email format'
+      });
+    }
+
+    const user = users.find(u => u.email === email);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
+
+    // Compare password with bcrypt
+    const passwordMatch = bcrypt.compareSync(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      data: {
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          address: user.address
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error during login'
+    });
+  }
 });
 
 // POST register new user
 app.post('/api/auth/register', authLimiter, (req, res) => {
-  const { name, email, password, phone, address } = req.body;
-  
-  if (!name || !email || !password) {
-    return res.status(400).json({
-      success: false,
-      message: 'Name, email, and password are required'
-    });
-  }
-
-  const emailExists = users.find(u => u.email === email);
-  if (emailExists) {
-    return res.status(400).json({
-      success: false,
-      message: 'Email already registered'
-    });
-  }
-
-  const newUser = {
-    id: uuidv4(),
-    name,
-    email,
-    password,
-    phone: phone || '',
-    address: address || '',
-    createdAt: new Date()
-  };
-
-  users.push(newUser);
-
-  // Generate token
-  const token = Buffer.from(`${newUser.id}:${Date.now()}`).toString('base64');
-
-  // Trigger webhook
-  triggerWebhook('user.created', newUser);
-
-  res.status(201).json({
-    success: true,
-    message: 'Registration successful',
-    data: {
-      token,
-      user: {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        phone: newUser.phone,
-        address: newUser.address
-      }
+  try {
+    const { name, email, password, phone, address } = req.body;
+    
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, email, and password are required'
+      });
     }
-  });
+
+    if (!validateEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email format'
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters'
+      });
+    }
+
+    if (phone && !validatePhone(phone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid phone format'
+      });
+    }
+
+    const emailExists = users.find(u => u.email === email);
+    if (emailExists) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email already registered'
+      });
+    }
+
+    // Hash password with bcrypt
+    const hashedPassword = bcrypt.hashSync(password, BCRYPT_ROUNDS);
+
+    const newUser = {
+      id: uuidv4(),
+      name: name.trim(),
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      phone: phone || '',
+      address: address || '',
+      createdAt: new Date()
+    };
+
+    users.push(newUser);
+    clearCacheKey('GET:/api/users');
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: newUser.id, email: newUser.email },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    triggerWebhook('user.created', newUser);
+
+    res.status(201).json({
+      success: true,
+      message: 'Registration successful',
+      data: {
+        token,
+        user: {
+          id: newUser.id,
+          name: newUser.name,
+          email: newUser.email,
+          phone: newUser.phone,
+          address: newUser.address
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error during registration'
+    });
+  }
 });
 
 // GET verify token
