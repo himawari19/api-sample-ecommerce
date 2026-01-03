@@ -21,27 +21,24 @@ Anda akan melihat:
 🚀 E-Commerce API running on http://localhost:3000
 ```
 
-### Step 3: Test dengan Postman
+### Step 3: Open Dashboard
 
-1. Buka Postman
-2. Klik "Import"
-3. Pilih file `postman_collection.json`
-4. Mulai testing!
+Buka browser: `http://localhost:3000`
 
-**Selesai! API Anda sudah berjalan.** ✅
+Anda akan melihat **HTML Testing Dashboard** dengan form untuk test semua endpoints!
+
+**Selesai! API Anda sudah berjalan dengan dashboard.** ✅
 
 ---
 
 ## 📚 Dokumentasi
 
-Setelah setup, baca dokumentasi sesuai kebutuhan:
+### 🚀 Saya ingin upload ke GitHub
+→ Baca: **[GITHUB_PAGES_GUIDE.md](GITHUB_PAGES_GUIDE.md)** (Full tutorial)
+→ Baca: **[GITHUB_QUICK_START.md](GITHUB_QUICK_START.md)** (Quick start)
 
-### 🚀 Saya ingin deploy ke Heroku (LIVE!)
-→ Baca: **[HEROKU_DEPLOYMENT.md](HEROKU_DEPLOYMENT.md)** (Full tutorial)
-→ Baca: **[HEROKU_QUICK_REFERENCE.md](HEROKU_QUICK_REFERENCE.md)** (Quick reference)
-
-### 🧪 Saya ingin test API yang sudah live
-→ Baca: **[HEROKU_TESTING_GUIDE.md](HEROKU_TESTING_GUIDE.md)**
+### 🧪 Saya ingin tahu cara test
+→ Baca: **[GITHUB_PAGES_GUIDE.md](GITHUB_PAGES_GUIDE.md)** (Testing section)
 
 ### Saya ingin tahu semua endpoint
 → Baca: **[API_ENDPOINTS.md](API_ENDPOINTS.md)**
@@ -131,16 +128,16 @@ Semua endpoint sudah siap di Postman collection:
 ecommerce-api-dummy/
 ├── server.js                 # Main API (25+ endpoints)
 ├── package.json              # Dependencies
-├── postman_collection.json   # Postman ready
+├── public/
+│   └── index.html            # HTML Dashboard
 │
 ├── START_HERE.md             # ← Anda di sini
-├── INDEX.md                  # Navigation guide
+├── GITHUB_PAGES_GUIDE.md     # GitHub setup guide
+├── GITHUB_QUICK_START.md     # Quick start
 ├── README.md                 # Full documentation
-├── QUICK_START.md            # 5-minute setup
 ├── API_ENDPOINTS.md          # Complete reference
-├── TESTING_GUIDE.md          # 30+ test cases
 ├── PROJECT_SUMMARY.md        # Project overview
-├── GITHUB_SETUP.md           # GitHub publishing
+├── INDEX.md                  # Navigation guide
 │
 ├── .gitignore                # Git configuration
 └── .env.example              # Environment template
