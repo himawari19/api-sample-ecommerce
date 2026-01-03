@@ -3,13 +3,9 @@ const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
-const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Load swagger.json
-const swaggerDocument = require('./swagger.json');
 
 // Middleware
 app.use(cors());
@@ -44,30 +40,6 @@ const adminLimiter = rateLimit({
 
 // Apply general rate limiter to all routes
 app.use(generalLimiter);
-
-// Swagger UI - setup dengan inline spec
-const swaggerOptions = {
-  definition: swaggerDocument,
-  apis: []
-};
-
-app.use('/api/docs', swaggerUi.serve);
-app.get('/api/docs', swaggerUi.setup(swaggerDocument, {
-  swaggerOptions: {
-    persistAuthorization: true
-  }
-}));
-
-// Serve swagger.json
-app.get('/api/swagger.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.json(swaggerDocument);
-});
-
-// Serve custom swagger HTML
-app.get('/swagger', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'swagger.html'));
-});
 
 // In-memory database
 let products = [
