@@ -5,220 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Commerce API - Testing Dashboard</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        header {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-        }
-
-        .card h2 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 18px;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        .card h3 {
-            color: #555;
-            margin-top: 20px;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-
-        .method-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-right: 10px;
-            color: white;
-            min-width: 60px;
-            text-align: center;
-        }
-
-        .method-get {
-            background: #48bb78;
-        }
-
-        .method-post {
-            background: #ed8936;
-        }
-
-        .method-put {
-            background: #4299e1;
-        }
-
-        .method-patch {
-            background: #9f7aea;
-        }
-
-        .method-delete {
-            background: #f56565;
-        }
-
-        .endpoint-detail {
-            background: #f7fafc;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 12px 0;
-            border-left: 4px solid #667eea;
-        }
-
-        .endpoint-detail strong {
-            color: #333;
-            font-size: 14px;
-        }
-
-        .endpoint-detail p {
-            margin: 8px 0;
-            font-size: 13px;
-            color: #666;
-            margin-left: 10px;
-        }
-
-        .endpoint-detail p strong {
-            color: #667eea;
-        }
-
-        .code-block {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 15px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            overflow-x: auto;
-            margin: 8px 0 8px 10px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .json-label {
-            color: #48bb78;
-            font-weight: 600;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            font-size: 13px;
-        }
-
-        .info-box {
-            background: #edf2f7;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .info-box strong {
-            color: #667eea;
-        }
-
-        footer {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-            margin-top: 30px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .tab-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            background: #e2e8f0;
-            color: #333;
-            transition: all 0.3s;
-        }
-
-        .tab-button.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .tab-button:hover {
-            background: #cbd5e0;
-        }
-
-        .tab-button.active:hover {
-            background: #5568d3;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header { background: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        h1 { color: #333; margin-bottom: 10px; }
+        .subtitle { color: #666; font-size: 14px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; }
+        .card h2 { color: #333; margin-bottom: 15px; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        .card h3 { color: #555; margin-top: 20px; margin-bottom: 15px; font-size: 16px; }
+        .method-badge { display: inline-block; padding: 5px 12px; border-radius: 3px; font-size: 12px; font-weight: 700; margin-right: 10px; color: white; min-width: 60px; text-align: center; }
+        .method-get { background: #48bb78; }
+        .method-post { background: #ed8936; }
+        .method-put { background: #4299e1; }
+        .method-patch { background: #9f7aea; }
+        .method-delete { background: #f56565; }
+        .endpoint-detail { background: #f7fafc; padding: 15px; border-radius: 5px; margin: 12px 0; border-left: 4px solid #667eea; }
+        .endpoint-detail strong { color: #333; font-size: 14px; }
+        .endpoint-detail p { margin: 8px 0; font-size: 13px; color: #666; margin-left: 10px; }
+        .endpoint-detail p strong { color: #667eea; }
+        .code-block { background: #2d3748; color: #e2e8f0; padding: 15px; border-radius: 3px; font-family: 'Courier New', monospace; font-size: 12px; overflow-x: auto; margin: 8px 0 8px 10px; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
+        .json-label { color: #48bb78; font-weight: 600; margin-top: 10px; margin-bottom: 5px; font-size: 13px; }
+        .info-box { background: #edf2f7; border-left: 4px solid #667eea; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; color: #333; }
+        .info-box strong { color: #667eea; }
+        footer { background: white; padding: 20px; border-radius: 10px; text-align: center; color: #666; font-size: 14px; margin-top: 30px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; background: #e2e8f0; color: #333; transition: all 0.3s; }
+        .tab-button.active { background: #667eea; color: white; }
+        .tab-button:hover { background: #cbd5e0; }
+        .tab-button.active:hover { background: #5568d3; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .example-num { color: #667eea; font-weight: 600; font-size: 12px; margin-top: 15px; margin-bottom: 5px; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>🛍️ E-Commerce API Testing Dashboard</h1>
-            <p class="subtitle">Complete API Reference with all HTTP Methods (GET, POST, PUT, PATCH, DELETE)</p>
+            <p class="subtitle">Complete API Reference with 10 Examples for Each Endpoint</p>
         </header>
 
         <div class="info-box">
-            <strong>📌 How to Use:</strong> This dashboard shows all available endpoints with their methods, required fields, and expected responses. Use this as a reference when testing with Postman or other API clients.
+            <strong>📌 How to Use:</strong> This dashboard shows all available endpoints with 10 complete request/response examples for each. Copy examples directly to Postman for testing.
         </div>
 
-        <!-- Endpoints Reference -->
         <div class="card">
             <h2>📚 Complete API Endpoints Reference</h2>
 
@@ -230,462 +61,39 @@
                 <button class="tab-button" onclick="showTab('cart')">Cart</button>
             </div>
 
-            <!-- Health Check -->
+            <!-- Health Tab -->
             <div id="health" class="tab-content active">
+                <h3>🏥 Health Check</h3>
                 <div class="endpoint-detail">
                     <strong><span class="method-badge method-get">GET</span>/api/health</strong>
-                    <p><strong>Purpose:</strong> Check if API is running and get server status</p>
-                    <p><strong>Parameters:</strong> None</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p class="json-label">Response Example:</p>
-                    <div class="code-block">{
-  "success": true,
-  "message": "API is running",
-  "timestamp": "2024-01-02T10:00:00.000Z"
-}</div>
+                    <p><strong>Purpose:</strong> Check if API is running</p>
+                    <p><strong>Parameters:</strong> None | <strong>Response:</strong> 200 OK</p>
                 </div>
+                <div id="health-examples"></div>
             </div>
 
-            <!-- Products -->
+            <!-- Products Tab -->
             <div id="products" class="tab-content">
                 <h3>📦 Products Endpoints</h3>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-get">GET</span>/api/products</strong>
-                    <p><strong>Purpose:</strong> Retrieve all products</p>
-                    <p><strong>Parameters:</strong> None</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p class="json-label">Response Example:</p>
-                    <div class="code-block">{
-  "success": true,
-  "data": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "name": "Laptop Gaming",
-      "price": 15000000,
-      "category": "Electronics",
-      "stock": 10,
-      "description": "High performance gaming laptop",
-      "image": "https://via.placeholder.com/300x300?text=Laptop",
-      "rating": 4.5,
-      "createdAt": "2024-01-02T10:00:00.000Z"
-    },
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440001",
-      "name": "Smartphone Pro",
-      "price": 8000000,
-      "category": "Electronics",
-      "stock": 25,
-      "description": "Latest smartphone with advanced features",
-      "image": "https://via.placeholder.com/300x300?text=Smartphone",
-      "rating": 4.8,
-      "createdAt": "2024-01-02T10:00:00.000Z"
-    }
-  ],
-  "total": 2
-}</div>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-get">GET</span>/api/products/:id</strong>
-                    <p><strong>Purpose:</strong> Get a specific product by ID</p>
-                    <p><strong>Parameters:</strong> id (product UUID)</p>
-                    <p><strong>Response Status:</strong> 200 OK or 404 Not Found</p>
-                    <p><strong>Example URL:</strong> /api/products/550e8400-e29b-41d4-a716-446655440000</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-post">POST</span>/api/products</strong>
-                    <p><strong>Purpose:</strong> Create a new product</p>
-                    <p><strong>Required Fields:</strong> name, price, category</p>
-                    <p><strong>Optional Fields:</strong> stock, description, image, rating</p>
-                    <p><strong>Response Status:</strong> 201 Created</p>
-                    <p class="json-label">Request Body Example:</p>
-                    <div class="code-block">{
-  "name": "Smartphone Pro",
-  "price": 8000000,
-  "category": "Electronics",
-  "stock": 25,
-  "description": "Latest smartphone",
-  "image": "https://example.com/image.jpg",
-  "rating": 4.8
-}</div>
-                    <p class="json-label">Response Example:</p>
-                    <div class="code-block">{
-  "success": true,
-  "message": "Product created successfully",
-  "data": {
-    "id": "550e8400-e29b-41d4-a716-446655440002",
-    "name": "Smartphone Pro",
-    "price": 8000000,
-    "category": "Electronics",
-    "stock": 25,
-    "description": "Latest smartphone",
-    "image": "https://example.com/image.jpg",
-    "rating": 4.8,
-    "createdAt": "2024-01-02T10:00:00.000Z"
-  }
-}</div>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-put">PUT</span>/api/products/:id</strong>
-                    <p><strong>Purpose:</strong> Update entire product (full replacement)</p>
-                    <p><strong>Parameters:</strong> id (product UUID)</p>
-                    <p><strong>Body:</strong> All product fields (name, price, category, stock, description, image, rating)</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p><strong>Note:</strong> PUT requires all fields. Use PATCH for partial updates.</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-patch">PATCH</span>/api/products/:id</strong>
-                    <p><strong>Purpose:</strong> Partially update product (only changed fields)</p>
-                    <p><strong>Parameters:</strong> id (product UUID)</p>
-                    <p><strong>Body:</strong> Only fields you want to update</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p><strong>Request Body Example:</strong></p>
-                    <div class="code-block">{
-  "price": 7500000,
-  "stock": 20
-}</div>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-delete">DELETE</span>/api/products/:id</strong>
-                    <p><strong>Purpose:</strong> Delete a product</p>
-                    <p><strong>Parameters:</strong> id (product UUID)</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p><strong>Response:</strong> Returns the deleted product object</p>
-                </div>
+                <div id="products-examples"></div>
             </div>
 
-            <!-- Users -->
+            <!-- Users Tab -->
             <div id="users" class="tab-content">
                 <h3>👥 Users Endpoints</h3>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-get">GET</span>/api/users</strong>
-                    <p><strong>Purpose:</strong> Retrieve all users</p>
-                    <p><strong>Parameters:</strong> None</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-get">GET</span>/api/users/:id</strong>
-                    <p><strong>Purpose:</strong> Get a specific user by ID</p>
-                    <p><strong>Parameters:</strong> id (user UUID)</p>
-                    <p><strong>Response Status:</strong> 200 OK or 404 Not Found</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-post">POST</span>/api/users</strong>
-                    <p><strong>Purpose:</strong> Create a new user</p>
-                    <p><strong>Required Fields:</strong> name, email, password</p>
-                    <p><strong>Optional Fields:</strong> phone, address</p>
-                    <p><strong>Response Status:</strong> 201 Created</p>
-                    <p><strong>Validation:</strong> Email must be unique</p>
-                    <p class="json-label">Request Body Example:</p>
-                    <div class="code-block">{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "phone": "08123456789",
-  "address": "Jl. Merdeka No. 1"
-}</div>
-                    <p class="json-label">Response Example:</p>
-                    <div class="code-block">{
-  "success": true,
-  "message": "User created successfully",
-  "data": {
-    "id": "550e8400-e29b-41d4-a716-446655440100",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "password123",
-    "phone": "08123456789",
-    "address": "Jl. Merdeka No. 1",
-    "createdAt": "2024-01-02T10:00:00.000Z"
-  }
-}</div>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-put">PUT</span>/api/users/:id</strong>
-                    <p><strong>Purpose:</strong> Update entire user (full replacement)</p>
-                    <p><strong>Parameters:</strong> id (user UUID)</p>
-                    <p><strong>Body:</strong> name, email, phone, address</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-patch">PATCH</span>/api/users/:id</strong>
-                    <p><strong>Purpose:</strong> Partially update user</p>
-                    <p><strong>Parameters:</strong> id (user UUID)</p>
-                    <p><strong>Body:</strong> Only fields to update</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-delete">DELETE</span>/api/users/:id</strong>
-                    <p><strong>Purpose:</strong> Delete a user</p>
-                    <p><strong>Parameters:</strong> id (user UUID)</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                </div>
+                <div id="users-examples"></div>
             </div>
 
-            <!-- Orders -->
+            <!-- Orders Tab -->
             <div id="orders" class="tab-content">
                 <h3>📋 Orders Endpoints</h3>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-get">GET</span>/api/orders</strong>
-                    <p><strong>Purpose:</strong> Retrieve all orders</p>
-                    <p><strong>Parameters:</strong> None</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-get">GET</span>/api/orders/:id</strong>
-                    <p><strong>Purpose:</strong> Get a specific order by ID</p>
-                    <p><strong>Parameters:</strong> id (order UUID)</p>
-                    <p><strong>Response Status:</strong> 200 OK or 404 Not Found</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-post">POST</span>/api/orders</strong>
-                    <p><strong>Purpose:</strong> Create a new order</p>
-                    <p><strong>Required Fields:</strong> userId, items (array)</p>
-                    <p><strong>Items Format:</strong> [{productId, quantity, price}]</p>
-                    <p><strong>Response Status:</strong> 201 Created</p>
-                    <p><strong>Auto-Calculation:</strong> Total price is automatically calculated</p>
-                    <p class="json-label">Request Body Example:</p>
-                    <div class="code-block">{
-  "userId": "550e8400-e29b-41d4-a716-446655440100",
-  "items": [
-    {
-      "productId": "550e8400-e29b-41d4-a716-446655440000",
-      "quantity": 2,
-      "price": 1500000
-    },
-    {
-      "productId": "550e8400-e29b-41d4-a716-446655440001",
-      "quantity": 1,
-      "price": 500000
-    }
-  ]
-}</div>
-                    <p class="json-label">Response Example:</p>
-                    <div class="code-block">{
-  "success": true,
-  "message": "Order created successfully",
-  "data": {
-    "id": "550e8400-e29b-41d4-a716-446655440200",
-    "userId": "550e8400-e29b-41d4-a716-446655440100",
-    "items": [
-      {
-        "productId": "550e8400-e29b-41d4-a716-446655440000",
-        "quantity": 2,
-        "price": 1500000
-      },
-      {
-        "productId": "550e8400-e29b-41d4-a716-446655440001",
-        "quantity": 1,
-        "price": 500000
-      }
-    ],
-    "totalPrice": 3500000,
-    "status": "pending",
-    "createdAt": "2024-01-02T10:00:00.000Z"
-  }
-}</div>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-put">PUT</span>/api/orders/:id</strong>
-                    <p><strong>Purpose:</strong> Update entire order</p>
-                    <p><strong>Parameters:</strong> id (order UUID)</p>
-                    <p><strong>Body:</strong> status, items</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p><strong>Status Values:</strong> pending, shipped, delivered, cancelled</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-patch">PATCH</span>/api/orders/:id</strong>
-                    <p><strong>Purpose:</strong> Partially update order</p>
-                    <p><strong>Parameters:</strong> id (order UUID)</p>
-                    <p><strong>Body:</strong> Only fields to update (e.g., status)</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p class="json-label">Request Body Example:</p>
-                    <div class="code-block">{
-  "status": "shipped"
-}</div>
-                    <p class="json-label">Response Example:</p>
-                    <div class="code-block">{
-  "success": true,
-  "message": "Order updated successfully",
-  "data": {
-    "id": "550e8400-e29b-41d4-a716-446655440200",
-    "userId": "550e8400-e29b-41d4-a716-446655440100",
-    "items": [
-      {
-        "productId": "550e8400-e29b-41d4-a716-446655440000",
-        "quantity": 2,
-        "price": 1500000
-      }
-    ],
-    "totalPrice": 3000000,
-    "status": "shipped",
-    "createdAt": "2024-01-02T10:00:00.000Z"
-  }
-}</div>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-delete">DELETE</span>/api/orders/:id</strong>
-                    <p><strong>Purpose:</strong> Delete an order</p>
-                    <p><strong>Parameters:</strong> id (order UUID)</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                </div>
+                <div id="orders-examples"></div>
             </div>
 
-            <!-- Cart -->
+            <!-- Cart Tab -->
             <div id="cart" class="tab-content">
                 <h3>🛒 Cart Endpoints</h3>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-get">GET</span>/api/cart</strong>
-                    <p><strong>Purpose:</strong> Get current cart items</p>
-                    <p><strong>Parameters:</strong> None</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p><strong>Response:</strong> Array of items in cart</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-post">POST</span>/api/cart</strong>
-                    <p><strong>Purpose:</strong> Add item to cart</p>
-                    <p><strong>Required Fields:</strong> productId, quantity</p>
-                    <p><strong>Response Status:</strong> 201 Created</p>
-                    <p><strong>Auto-Merge:</strong> If product already in cart, quantity is increased</p>
-                    <p class="json-label">Request Body Example:</p>
-                    <div class="code-block">{
-  "productId": "550e8400-e29b-41d4-a716-446655440000",
-  "quantity": 2
-}</div>
-                    <p class="json-label">Response Example:</p>
-                    <div class="code-block">{
-  "success": true,
-  "message": "Item added to cart",
-  "data": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440300",
-      "productId": "550e8400-e29b-41d4-a716-446655440000",
-      "name": "Laptop Gaming",
-      "price": 15000000,
-      "quantity": 2,
-      "image": "https://via.placeholder.com/300x300?text=Laptop"
-    }
-  ]
-}</div>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-put">PUT</span>/api/cart/:productId</strong>
-                    <p><strong>Purpose:</strong> Update cart item quantity</p>
-                    <p><strong>Parameters:</strong> productId (product UUID)</p>
-                    <p><strong>Body:</strong> quantity</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p><strong>Note:</strong> If quantity is 0 or less, item is removed</p>
-                    <p class="json-label">Request Body Example:</p>
-                    <div class="code-block">{
-  "quantity": 5
-}</div>
-                    <p class="json-label">Response Example:</p>
-                    <div class="code-block">{
-  "success": true,
-  "message": "Cart updated successfully",
-  "data": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440300",
-      "productId": "550e8400-e29b-41d4-a716-446655440000",
-      "name": "Laptop Gaming",
-      "price": 15000000,
-      "quantity": 5,
-      "image": "https://via.placeholder.com/300x300?text=Laptop"
-    }
-  ]
-}</div>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-delete">DELETE</span>/api/cart/:productId</strong>
-                    <p><strong>Purpose:</strong> Remove specific item from cart</p>
-                    <p><strong>Parameters:</strong> productId (product UUID)</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p><strong>Response:</strong> Returns the removed item</p>
-                </div>
-
-                <div class="endpoint-detail">
-                    <strong><span class="method-badge method-delete">DELETE</span>/api/cart</strong>
-                    <p><strong>Purpose:</strong> Clear entire cart</p>
-                    <p><strong>Parameters:</strong> None</p>
-                    <p><strong>Response Status:</strong> 200 OK</p>
-                    <p><strong>Response:</strong> Success message</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Response Format Guide -->
-        <div class="card">
-            <h2>📊 Response Format Guide</h2>
-
-            <h3>Success Response (Status 200, 201)</h3>
-            <div class="code-block">{
-  "success": true,
-  "message": "Operation successful",
-  "data": { /* resource object */ }
-}</div>
-
-            <h3>Error Response (Status 400, 404)</h3>
-            <div class="code-block">{
-  "success": false,
-  "message": "Error description"
-}</div>
-
-            <h3>HTTP Status Codes</h3>
-            <div class="endpoint-detail">
-                <p><strong>200 OK:</strong> Successful GET, PUT, PATCH, DELETE request</p>
-                <p><strong>201 Created:</strong> Successful POST request (resource created)</p>
-                <p><strong>400 Bad Request:</strong> Invalid input or missing required fields</p>
-                <p><strong>404 Not Found:</strong> Resource doesn't exist</p>
-            </div>
-        </div>
-
-        <!-- Testing Tips -->
-        <div class="card">
-            <h2>💡 Testing Tips</h2>
-
-            <div class="endpoint-detail">
-                <p><strong>1. Use Postman Environment Variables:</strong></p>
-                <p>Create a variable: base_url = https://api-sample-ecommerce.vercel.app/api</p>
-                <p>Then use: {{base_url}}/products</p>
-            </div>
-
-            <div class="endpoint-detail">
-                <p><strong>2. GET vs POST vs PUT vs PATCH vs DELETE:</strong></p>
-                <p><strong>GET:</strong> Retrieve data (no body needed)</p>
-                <p><strong>POST:</strong> Create new resource (send data in body)</p>
-                <p><strong>PUT:</strong> Replace entire resource (send all fields)</p>
-                <p><strong>PATCH:</strong> Update partial resource (send only changed fields)</p>
-                <p><strong>DELETE:</strong> Remove resource (no body needed)</p>
-            </div>
-
-            <div class="endpoint-detail">
-                <p><strong>3. Always include Content-Type header for POST/PUT/PATCH:</strong></p>
-                <div class="code-block">Content-Type: application/json</div>
-            </div>
-
-            <div class="endpoint-detail">
-                <p><strong>4. Save IDs from responses:</strong></p>
-                <p>When you create a resource, save the ID to use in subsequent requests</p>
+                <div id="cart-examples"></div>
             </div>
         </div>
 
@@ -696,21 +104,100 @@
     </div>
 
     <script>
-        function showTab(tabName) {
-            // Hide all tabs
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
+        const endpoints = {
+            users: [
+                { method: 'GET', url: '/api/users', title: 'Get All Users', req: 'GET /api/users', res: '{\n  "success": true,\n  "data": [\n    {\n      "id": "user-001",\n      "name": "John Doe",\n      "email": "john@example.com",\n      "password": "password123",\n      "phone": "08123456789",\n      "address": "Jl. Merdeka No. 1",\n      "createdAt": "2026-01-03T06:52:37.225Z"\n    }\n  ],\n  "total": 1\n}' },
+                { method: 'GET', url: '/api/users/:id', title: 'Get User by ID', req: 'GET /api/users/user-001', res: '{\n  "success": true,\n  "data": {\n    "id": "user-001",\n    "name": "John Doe",\n    "email": "john@example.com",\n    "password": "password123",\n    "phone": "08123456789",\n    "address": "Jl. Merdeka No. 1",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'POST', url: '/api/users', title: 'Create User 1', req: '{\n  "name": "Jane Smith",\n  "email": "jane@example.com",\n  "password": "password456",\n  "phone": "08987654321",\n  "address": "Jl. Sudirman No. 2"\n}', res: '{\n  "success": true,\n  "message": "User created successfully",\n  "data": {\n    "id": "user-002",\n    "name": "Jane Smith",\n    "email": "jane@example.com",\n    "password": "password456",\n    "phone": "08987654321",\n    "address": "Jl. Sudirman No. 2",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'POST', url: '/api/users', title: 'Create User 2', req: '{\n  "name": "Bob Wilson",\n  "email": "bob@example.com",\n  "password": "password789",\n  "phone": "08555666777",\n  "address": "Jl. Ahmad Yani No. 3"\n}', res: '{\n  "success": true,\n  "message": "User created successfully",\n  "data": {\n    "id": "user-003",\n    "name": "Bob Wilson",\n    "email": "bob@example.com",\n    "password": "password789",\n    "phone": "08555666777",\n    "address": "Jl. Ahmad Yani No. 3",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'POST', url: '/api/users', title: 'Create User 3', req: '{\n  "name": "Alice Johnson",\n  "email": "alice@example.com",\n  "password": "password101",\n  "phone": "08111222333",\n  "address": "Jl. Gatot Subroto No. 4"\n}', res: '{\n  "success": true,\n  "message": "User created successfully",\n  "data": {\n    "id": "user-004",\n    "name": "Alice Johnson",\n    "email": "alice@example.com",\n    "password": "password101",\n    "phone": "08111222333",\n    "address": "Jl. Gatot Subroto No. 4",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'PUT', url: '/api/users/:id', title: 'Update User 1', req: '{\n  "name": "John Doe Updated",\n  "email": "john.updated@example.com",\n  "phone": "08123456789",\n  "address": "Jl. Merdeka No. 10"\n}', res: '{\n  "success": true,\n  "message": "User updated successfully",\n  "data": {\n    "id": "user-001",\n    "name": "John Doe Updated",\n    "email": "john.updated@example.com",\n    "phone": "08123456789",\n    "address": "Jl. Merdeka No. 10",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'PATCH', url: '/api/users/:id', title: 'Partial Update 1', req: '{\n  "phone": "08999888777"\n}', res: '{\n  "success": true,\n  "message": "User updated successfully",\n  "data": {\n    "id": "user-002",\n    "name": "Jane Smith",\n    "email": "jane@example.com",\n    "phone": "08999888777",\n    "address": "Jl. Sudirman No. 2",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'PATCH', url: '/api/users/:id', title: 'Partial Update 2', req: '{\n  "address": "Jl. Ahmad Yani No. 5"\n}', res: '{\n  "success": true,\n  "message": "User updated successfully",\n  "data": {\n    "id": "user-003",\n    "name": "Bob Wilson",\n    "email": "bob@example.com",\n    "phone": "08555666777",\n    "address": "Jl. Ahmad Yani No. 5",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'DELETE', url: '/api/users/:id', title: 'Delete User', req: 'DELETE /api/users/user-004', res: '{\n  "success": true,\n  "message": "User deleted successfully",\n  "data": {\n    "id": "user-004",\n    "name": "Alice Johnson",\n    "email": "alice@example.com",\n    "password": "password101",\n    "phone": "08111222333",\n    "address": "Jl. Gatot Subroto No. 4",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'GET', url: '/api/users', title: 'Get All Users (After Changes)', req: 'GET /api/users', res: '{\n  "success": true,\n  "data": [\n    {\n      "id": "user-001",\n      "name": "John Doe Updated",\n      "email": "john.updated@example.com",\n      "phone": "08123456789",\n      "address": "Jl. Merdeka No. 10",\n      "createdAt": "2026-01-03T06:52:37.225Z"\n    }\n  ],\n  "total": 1\n}' }
+            ],
+            orders: [
+                { method: 'GET', url: '/api/orders', title: 'Get All Orders', req: 'GET /api/orders', res: '{\n  "success": true,\n  "data": [\n    {\n      "id": "order-001",\n      "userId": "user-001",\n      "items": [\n        {\n          "productId": "prod-001",\n          "quantity": 2,\n          "price": 1500000\n        }\n      ],\n      "totalPrice": 3000000,\n      "status": "pending",\n      "createdAt": "2026-01-03T06:52:37.225Z"\n    }\n  ],\n  "total": 1\n}' },
+                { method: 'GET', url: '/api/orders/:id', title: 'Get Order by ID', req: 'GET /api/orders/order-001', res: '{\n  "success": true,\n  "data": {\n    "id": "order-001",\n    "userId": "user-001",\n    "items": [\n      {\n        "productId": "prod-001",\n        "quantity": 2,\n        "price": 1500000\n      }\n    ],\n    "totalPrice": 3000000,\n    "status": "pending",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'POST', url: '/api/orders', title: 'Create Order 1', req: '{\n  "userId": "user-001",\n  "items": [\n    {\n      "productId": "prod-001",\n      "quantity": 1,\n      "price": 15000000\n    },\n    {\n      "productId": "prod-002",\n      "quantity": 2,\n      "price": 8000000\n    }\n  ]\n}', res: '{\n  "success": true,\n  "message": "Order created successfully",\n  "data": {\n    "id": "order-002",\n    "userId": "user-001",\n    "items": [\n      {\n        "productId": "prod-001",\n        "quantity": 1,\n        "price": 15000000\n      },\n      {\n        "productId": "prod-002",\n        "quantity": 2,\n        "price": 8000000\n      }\n    ],\n    "totalPrice": 31000000,\n    "status": "pending",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'POST', url: '/api/orders', title: 'Create Order 2', req: '{\n  "userId": "user-002",\n  "items": [\n    {\n      "productId": "prod-003",\n      "quantity": 5,\n      "price": 1500000\n    }\n  ]\n}', res: '{\n  "success": true,\n  "message": "Order created successfully",\n  "data": {\n    "id": "order-003",\n    "userId": "user-002",\n    "items": [\n      {\n        "productId": "prod-003",\n        "quantity": 5,\n        "price": 1500000\n      }\n    ],\n    "totalPrice": 7500000,\n    "status": "pending",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'POST', url: '/api/orders', title: 'Create Order 3', req: '{\n  "userId": "user-003",\n  "items": [\n    {\n      "productId": "prod-002",\n      "quantity": 3,\n      "price": 8000000\n    }\n  ]\n}', res: '{\n  "success": true,\n  "message": "Order created successfully",\n  "data": {\n    "id": "order-004",\n    "userId": "user-003",\n    "items": [\n      {\n        "productId": "prod-002",\n        "quantity": 3,\n        "price": 8000000\n      }\n    ],\n    "totalPrice": 24000000,\n    "status": "pending",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'PUT', url: '/api/orders/:id', title: 'Update Order 1', req: '{\n  "status": "shipped",\n  "items": [\n    {\n      "productId": "prod-001",\n      "quantity": 1,\n      "price": 15000000\n    }\n  ]\n}', res: '{\n  "success": true,\n  "message": "Order updated successfully",\n  "data": {\n    "id": "order-002",\n    "userId": "user-001",\n    "items": [\n      {\n        "productId": "prod-001",\n        "quantity": 1,\n        "price": 15000000\n      }\n    ],\n    "totalPrice": 15000000,\n    "status": "shipped",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'PATCH', url: '/api/orders/:id', title: 'Partial Update 1', req: '{\n  "status": "delivered"\n}', res: '{\n  "success": true,\n  "message": "Order updated successfully",\n  "data": {\n    "id": "order-001",\n    "userId": "user-001",\n    "items": [\n      {\n        "productId": "prod-001",\n        "quantity": 2,\n        "price": 1500000\n      }\n    ],\n    "totalPrice": 3000000,\n    "status": "delivered",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'PATCH', url: '/api/orders/:id', title: 'Partial Update 2', req: '{\n  "status": "cancelled"\n}', res: '{\n  "success": true,\n  "message": "Order updated successfully",\n  "data": {\n    "id": "order-003",\n    "userId": "user-002",\n    "items": [\n      {\n        "productId": "prod-003",\n        "quantity": 5,\n        "price": 1500000\n      }\n    ],\n    "totalPrice": 7500000,\n    "status": "cancelled",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'DELETE', url: '/api/orders/:id', title: 'Delete Order', req: 'DELETE /api/orders/order-004', res: '{\n  "success": true,\n  "message": "Order deleted successfully",\n  "data": {\n    "id": "order-004",\n    "userId": "user-003",\n    "items": [\n      {\n        "productId": "prod-002",\n        "quantity": 3,\n        "price": 8000000\n      }\n    ],\n    "totalPrice": 24000000,\n    "status": "pending",\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'GET', url: '/api/orders', title: 'Get All Orders (After Changes)', req: 'GET /api/orders', res: '{\n  "success": true,\n  "data": [\n    {\n      "id": "order-001",\n      "userId": "user-001",\n      "items": [\n        {\n          "productId": "prod-001",\n          "quantity": 2,\n          "price": 1500000\n        }\n      ],\n      "totalPrice": 3000000,\n      "status": "delivered",\n      "createdAt": "2026-01-03T06:52:37.225Z"\n    }\n  ],\n  "total": 1\n}' }
+            ],
+            cart: [
+                { method: 'GET', url: '/api/cart', title: 'Get Cart Items', req: 'GET /api/cart', res: '{\n  "success": true,\n  "data": [],\n  "total": 0\n}' },
+                { method: 'POST', url: '/api/cart', title: 'Add Item 1', req: '{\n  "productId": "prod-001",\n  "quantity": 2\n}', res: '{\n  "success": true,\n  "message": "Item added to cart",\n  "data": [\n    {\n      "id": "cart-001",\n      "productId": "prod-001",\n      "name": "Laptop Gaming",\n      "price": 15000000,\n      "quantity": 2,\n      "image": "https://via.placeholder.com/300x300?text=Laptop"\n    }\n  ]\n}' },
+                { method: 'POST', url: '/api/cart', title: 'Add Item 2', req: '{\n  "productId": "prod-002",\n  "quantity": 1\n}', res: '{\n  "success": true,\n  "message": "Item added to cart",\n  "data": [\n    {\n      "id": "cart-001",\n      "productId": "prod-001",\n      "name": "Laptop Gaming",\n      "price": 15000000,\n      "quantity": 2,\n      "image": "https://via.placeholder.com/300x300?text=Laptop"\n    },\n    {\n      "id": "cart-002",\n      "productId": "prod-002",\n      "name": "Smartphone Pro",\n      "price": 8000000,\n      "quantity": 1,\n      "image": "https://via.placeholder.com/300x300?text=Smartphone"\n    }\n  ]\n}' },
+                { method: 'POST', url: '/api/cart', title: 'Add Item 3', req: '{\n  "productId": "prod-003",\n  "quantity": 5\n}', res: '{\n  "success": true,\n  "message": "Item added to cart",\n  "data": [\n    {\n      "id": "cart-001",\n      "productId": "prod-001",\n      "name": "Laptop Gaming",\n      "price": 15000000,\n      "quantity": 2,\n      "image": "https://via.placeholder.com/300x300?text=Laptop"\n    },\n    {\n      "id": "cart-002",\n      "productId": "prod-002",\n      "name": "Smartphone Pro",\n      "price": 8000000,\n      "quantity": 1,\n      "image": "https://via.placeholder.com/300x300?text=Smartphone"\n    },\n    {\n      "id": "cart-003",\n      "productId": "prod-003",\n      "name": "Wireless Headphones",\n      "price": 1500000,\n      "quantity": 5,\n      "image": "https://via.placeholder.com/300x300?text=Headphones"\n    }\n  ]\n}' },
+                { method: 'POST', url: '/api/cart', title: 'Add Duplicate Item', req: '{\n  "productId": "prod-001",\n  "quantity": 3\n}', res: '{\n  "success": true,\n  "message": "Item added to cart",\n  "data": [\n    {\n      "id": "cart-001",\n      "productId": "prod-001",\n      "name": "Laptop Gaming",\n      "price": 15000000,\n      "quantity": 5,\n      "image": "https://via.placeholder.com/300x300?text=Laptop"\n    },\n    {\n      "id": "cart-002",\n      "productId": "prod-002",\n      "name": "Smartphone Pro",\n      "price": 8000000,\n      "quantity": 1,\n      "image": "https://via.placeholder.com/300x300?text=Smartphone"\n    },\n    {\n      "id": "cart-003",\n      "productId": "prod-003",\n      "name": "Wireless Headphones",\n      "price": 1500000,\n      "quantity": 5,\n      "image": "https://via.placeholder.com/300x300?text=Headphones"\n    }\n  ]\n}' },
+                { method: 'PUT', url: '/api/cart/:productId', title: 'Update Quantity 1', req: '{\n  "quantity": 3\n}', res: '{\n  "success": true,\n  "message": "Cart updated successfully",\n  "data": [\n    {\n      "id": "cart-001",\n      "productId": "prod-001",\n      "name": "Laptop Gaming",\n      "price": 15000000,\n      "quantity": 3,\n      "image": "https://via.placeholder.com/300x300?text=Laptop"\n    },\n    {\n      "id": "cart-002",\n      "productId": "prod-002",\n      "name": "Smartphone Pro",\n      "price": 8000000,\n      "quantity": 1,\n      "image": "https://via.placeholder.com/300x300?text=Smartphone"\n    },\n    {\n      "id": "cart-003",\n      "productId": "prod-003",\n      "name": "Wireless Headphones",\n      "price": 1500000,\n      "quantity": 5,\n      "image": "https://via.placeholder.com/300x300?text=Headphones"\n    }\n  ]\n}' },
+                { method: 'PUT', url: '/api/cart/:productId', title: 'Update Quantity 2', req: '{\n  "quantity": 2\n}', res: '{\n  "success": true,\n  "message": "Cart updated successfully",\n  "data": [\n    {\n      "id": "cart-001",\n      "productId": "prod-001",\n      "name": "Laptop Gaming",\n      "price": 15000000,\n      "quantity": 3,\n      "image": "https://via.placeholder.com/300x300?text=Laptop"\n    },\n    {\n      "id": "cart-002",\n      "productId": "prod-002",\n      "name": "Smartphone Pro",\n      "price": 8000000,\n      "quantity": 2,\n      "image": "https://via.placeholder.com/300x300?text=Smartphone"\n    },\n    {\n      "id": "cart-003",\n      "productId": "prod-003",\n      "name": "Wireless Headphones",\n      "price": 1500000,\n      "quantity": 5,\n      "image": "https://via.placeholder.com/300x300?text=Headphones"\n    }\n  ]\n}' },
+                { method: 'DELETE', url: '/api/cart/:productId', title: 'Remove Item', req: 'DELETE /api/cart/prod-003', res: '{\n  "success": true,\n  "message": "Item removed from cart",\n  "data": {\n    "id": "cart-003",\n    "productId": "prod-003",\n    "name": "Wireless Headphones",\n    "price": 1500000,\n    "quantity": 5,\n    "image": "https://via.placeholder.com/300x300?text=Headphones"\n  }\n}' },
+                { method: 'DELETE', url: '/api/cart', title: 'Clear Cart', req: 'DELETE /api/cart', res: '{\n  "success": true,\n  "message": "Cart cleared successfully"\n}' }
+            ],
+            health: [
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T06:54:45.380Z"\n}' },
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T07:00:15.500Z"\n}' },
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T07:05:30.120Z"\n}' },
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T07:10:45.890Z"\n}' },
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T07:15:22.456Z"\n}' },
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T07:20:10.789Z"\n}' },
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T07:25:33.234Z"\n}' },
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T07:30:55.567Z"\n}' },
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T07:35:42.901Z"\n}' },
+                { method: 'GET', url: '/api/health', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T07:40:18.345Z"\n}' }
+            ],
+            products: [
+                { method: 'GET', url: '/api/products', title: 'Get All Products', req: 'GET /api/products', res: '{\n  "success": true,\n  "data": [\n    {\n      "id": "ba4f6fa1-c843-443e-940a-79b91f686eeb",\n      "name": "Laptop Gaming",\n      "price": 15000000,\n      "category": "Electronics",\n      "stock": 10,\n      "description": "High performance gaming laptop",\n      "image": "https://via.placeholder.com/300x300?text=Laptop",\n      "rating": 4.5,\n      "createdAt": "2026-01-03T06:52:37.225Z"\n    }\n  ],\n  "total": 1\n}' },
+                { method: 'GET', url: '/api/products/:id', title: 'Get Product by ID', req: 'GET /api/products/ba4f6fa1-c843-443e-940a-79b91f686eeb', res: '{\n  "success": true,\n  "data": {\n    "id": "ba4f6fa1-c843-443e-940a-79b91f686eeb",\n    "name": "Laptop Gaming",\n    "price": 15000000,\n    "category": "Electronics",\n    "stock": 10,\n    "description": "High performance gaming laptop",\n    "image": "https://via.placeholder.com/300x300?text=Laptop",\n    "rating": 4.5,\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'POST', url: '/api/products', title: 'Create Product 1', req: '{\n  "name": "Smartphone Pro",\n  "price": 8000000,\n  "category": "Electronics",\n  "stock": 25,\n  "description": "Latest smartphone",\n  "rating": 4.8\n}', res: '{\n  "success": true,\n  "message": "Product created successfully",\n  "data": {\n    "id": "0ec91293-26e6-4116-bdfd-b61017238647",\n    "name": "Smartphone Pro",\n    "price": 8000000,\n    "category": "Electronics",\n    "stock": 25,\n    "description": "Latest smartphone",\n    "image": "https://via.placeholder.com/300x300?text=Product",\n    "rating": 4.8,\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'POST', url: '/api/products', title: 'Create Product 2', req: '{\n  "name": "Wireless Headphones",\n  "price": 1500000,\n  "category": "Accessories",\n  "stock": 50,\n  "description": "Premium wireless headphones",\n  "rating": 4.3\n}', res: '{\n  "success": true,\n  "message": "Product created successfully",\n  "data": {\n    "id": "32ed5f56-8e68-42ef-a9fa-c8d7b8979e37",\n    "name": "Wireless Headphones",\n    "price": 1500000,\n    "category": "Accessories",\n    "stock": 50,\n    "description": "Premium wireless headphones",\n    "image": "https://via.placeholder.com/300x300?text=Product",\n    "rating": 4.3,\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'POST', url: '/api/products', title: 'Create Product 3', req: '{\n  "name": "USB-C Cable",\n  "price": 150000,\n  "category": "Accessories",\n  "stock": 100,\n  "description": "Fast charging USB-C cable",\n  "rating": 4.6\n}', res: '{\n  "success": true,\n  "message": "Product created successfully",\n  "data": {\n    "id": "a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6",\n    "name": "USB-C Cable",\n    "price": 150000,\n    "category": "Accessories",\n    "stock": 100,\n    "description": "Fast charging USB-C cable",\n    "image": "https://via.placeholder.com/300x300?text=Product",\n    "rating": 4.6,\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'PUT', url: '/api/products/:id', title: 'Update Product 1', req: '{\n  "name": "Laptop Gaming Pro",\n  "price": 16000000,\n  "category": "Electronics",\n  "stock": 8,\n  "description": "High performance gaming laptop with RTX",\n  "image": "https://via.placeholder.com/300x300?text=Laptop",\n  "rating": 4.7\n}', res: '{\n  "success": true,\n  "message": "Product updated successfully",\n  "data": {\n    "id": "ba4f6fa1-c843-443e-940a-79b91f686eeb",\n    "name": "Laptop Gaming Pro",\n    "price": 16000000,\n    "category": "Electronics",\n    "stock": 8,\n    "description": "High performance gaming laptop with RTX",\n    "image": "https://via.placeholder.com/300x300?text=Laptop",\n    "rating": 4.7,\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'PATCH', url: '/api/products/:id', title: 'Partial Update 1', req: '{\n  "price": 7500000,\n  "stock": 20\n}', res: '{\n  "success": true,\n  "message": "Product updated successfully",\n  "data": {\n    "id": "0ec91293-26e6-4116-bdfd-b61017238647",\n    "name": "Smartphone Pro",\n    "price": 7500000,\n    "category": "Electronics",\n    "stock": 20,\n    "description": "Latest smartphone",\n    "image": "https://via.placeholder.com/300x300?text=Smartphone",\n    "rating": 4.8,\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'PATCH', url: '/api/products/:id', title: 'Partial Update 2', req: '{\n  "rating": 4.9\n}', res: '{\n  "success": true,\n  "message": "Product updated successfully",\n  "data": {\n    "id": "32ed5f56-8e68-42ef-a9fa-c8d7b8979e37",\n    "name": "Wireless Headphones",\n    "price": 1500000,\n    "category": "Accessories",\n    "stock": 50,\n    "description": "Premium wireless headphones",\n    "image": "https://via.placeholder.com/300x300?text=Headphones",\n    "rating": 4.9,\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'DELETE', url: '/api/products/:id', title: 'Delete Product', req: 'DELETE /api/products/a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6', res: '{\n  "success": true,\n  "message": "Product deleted successfully",\n  "data": {\n    "id": "a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6",\n    "name": "USB-C Cable",\n    "price": 150000,\n    "category": "Accessories",\n    "stock": 100,\n    "description": "Fast charging USB-C cable",\n    "image": "https://via.placeholder.com/300x300?text=Product",\n    "rating": 4.6,\n    "createdAt": "2026-01-03T06:52:37.225Z"\n  }\n}' },
+                { method: 'GET', url: '/api/products', title: 'Get All Products (After Changes)', req: 'GET /api/products', res: '{\n  "success": true,\n  "data": [\n    {\n      "id": "ba4f6fa1-c843-443e-940a-79b91f686eeb",\n      "name": "Laptop Gaming Pro",\n      "price": 16000000,\n      "category": "Electronics",\n      "stock": 8,\n      "description": "High performance gaming laptop with RTX",\n      "image": "https://via.placeholder.com/300x300?text=Laptop",\n      "rating": 4.7,\n      "createdAt": "2026-01-03T06:52:37.225Z"\n    }\n  ],\n  "total": 1\n}' }
+            ]
+        };
 
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(btn => btn.classList.remove('active'));
+        function renderExamples(tabName) {
+            const container = document.getElementById(tabName + '-examples');
+            const data = endpoints[tabName];
+            if (!data) return;
 
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
-
-            // Add active class to clicked button
-            event.target.classList.add('active');
+            let html = '';
+            data.forEach((ex, idx) => {
+                const methodClass = 'method-' + ex.method.toLowerCase();
+                html += `
+                    <div class="endpoint-detail">
+                        <p class="example-num">Example ${idx + 1} - ${ex.title || ex.method + ' ' + ex.url}</p>
+                        <strong><span class="method-badge ${methodClass}">${ex.method}</span>${ex.url}</strong>
+                        <p class="json-label">Request:</p>
+                        <div class="code-block">${ex.req}</div>
+                        <p class="json-label">Response:</p>
+                        <div class="code-block">${ex.res}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
         }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            renderExamples(tabName);
+        }
+
+        // Render health examples on load
+        renderExamples('health');
     </script>
 </body>
 </html>
