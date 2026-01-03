@@ -82,6 +82,85 @@ let orders = [
 
 let cart = [];
 
+// ==================== AUTO RESET DATA ====================
+
+// Function to reset all data to initial state
+function resetData() {
+  products = [
+    {
+      id: uuidv4(),
+      name: 'Laptop Gaming',
+      price: 15000000,
+      category: 'Electronics',
+      stock: 10,
+      description: 'High performance gaming laptop',
+      image: 'https://via.placeholder.com/300x300?text=Laptop',
+      rating: 4.5,
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Smartphone Pro',
+      price: 8000000,
+      category: 'Electronics',
+      stock: 25,
+      description: 'Latest smartphone with advanced features',
+      image: 'https://via.placeholder.com/300x300?text=Smartphone',
+      rating: 4.8,
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Wireless Headphones',
+      price: 1500000,
+      category: 'Accessories',
+      stock: 50,
+      description: 'Premium wireless headphones with noise cancellation',
+      image: 'https://via.placeholder.com/300x300?text=Headphones',
+      rating: 4.3,
+      createdAt: new Date()
+    }
+  ];
+
+  users = [
+    {
+      id: uuidv4(),
+      name: 'John Doe',
+      email: 'john@example.com',
+      password: 'password123',
+      phone: '08123456789',
+      address: 'Jl. Merdeka No. 1',
+      createdAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      password: 'password456',
+      phone: '08987654321',
+      address: 'Jl. Sudirman No. 2',
+      createdAt: new Date()
+    }
+  ];
+
+  orders = [
+    {
+      id: uuidv4(),
+      userId: users[0].id,
+      items: [{ productId: products[0].id, quantity: 1, price: products[0].price }],
+      totalPrice: products[0].price,
+      status: 'pending',
+      createdAt: new Date()
+    }
+  ];
+
+  cart = [];
+  console.log('✅ Data reset to initial state');
+}
+
+// Auto reset every 1 hour (3600000 ms)
+setInterval(resetData, 3600000);
+
 // ==================== PRODUCTS ====================
 
 // GET all products
