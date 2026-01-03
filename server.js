@@ -174,6 +174,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'", "http://localhost:*", "https://api-sample-ecommerce.vercel.app"],
       scriptSrc: ["'self'", "'unsafe-inline'", "http://localhost:*"],
+      scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:", "http:"],
       connectSrc: ["'self'", "https:", "http://localhost:*", "https://api-sample-ecommerce.vercel.app"],
