@@ -56,6 +56,7 @@
 
             <div class="tabs">
                 <button class="tab-button active" onclick="showTab('health')">Health</button>
+                <button class="tab-button" onclick="showTab('auth')">Auth</button>
                 <button class="tab-button" onclick="showTab('products')">Products</button>
                 <button class="tab-button" onclick="showTab('users')">Users</button>
                 <button class="tab-button" onclick="showTab('orders')">Orders</button>
@@ -65,6 +66,11 @@
             <!-- Health Tab -->
             <div id="health" class="tab-content active">
                 <div id="health-examples"></div>
+            </div>
+
+            <!-- Auth Tab -->
+            <div id="auth" class="tab-content">
+                <div id="auth-examples"></div>
             </div>
 
             <!-- Products Tab -->
@@ -97,16 +103,19 @@
     <script>
         const endpoints = {
             health: [
-                { method: 'GET', url: '/api/health', title: 'Check API Status 1', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T08:00:00.000Z"\n}' },
-                { method: 'GET', url: '/api/health', title: 'Check API Status 2', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T08:15:00.000Z"\n}' },
-                { method: 'GET', url: '/api/health', title: 'Check API Status 3', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T08:30:00.000Z"\n}' },
-                { method: 'GET', url: '/api/health', title: 'Check API Status 4', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T08:45:00.000Z"\n}' },
-                { method: 'GET', url: '/api/health', title: 'Check API Status 5', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T09:00:00.000Z"\n}' },
-                { method: 'GET', url: '/api/health', title: 'Check API Status 6', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T09:15:00.000Z"\n}' },
-                { method: 'GET', url: '/api/health', title: 'Check API Status 7', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T09:30:00.000Z"\n}' },
-                { method: 'GET', url: '/api/health', title: 'Check API Status 8', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T09:45:00.000Z"\n}' },
-                { method: 'GET', url: '/api/health', title: 'Check API Status 9', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T10:00:00.000Z"\n}' },
-                { method: 'GET', url: '/api/health', title: 'Check API Status 10', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T10:15:00.000Z"\n}' }
+                { method: 'GET', url: '/api/health', title: 'Check API Status 1', req: 'GET /api/health', res: '{\n  "success": true,\n  "message": "API is running",\n  "timestamp": "2026-01-03T08:00:00.000Z"\n}' }
+            ],
+            auth: [
+                { method: 'POST', url: '/api/auth/login', title: 'Login User 1', req: '{\n  "email": "john@example.com",\n  "password": "password123"\n}', res: '{\n  "success": true,\n  "message": "Login successful",\n  "data": {\n    "token": "am9obi1kb2U6MTcwNDI3NzIwMDAwMA==",\n    "user": {"id": "john-doe", "name": "John Doe", "email": "john@example.com"}\n  }\n}' },
+                { method: 'POST', url: '/api/auth/login', title: 'Login User 2', req: '{\n  "email": "jane@example.com",\n  "password": "password456"\n}', res: '{\n  "success": true,\n  "message": "Login successful",\n  "data": {\n    "token": "amFuZS1zbWl0aDoxNzA0Mjc3MjAwMDAwMA==",\n    "user": {"id": "jane-smith", "name": "Jane Smith", "email": "jane@example.com"}\n  }\n}' },
+                { method: 'POST', url: '/api/auth/login', title: 'Login User 3', req: '{\n  "email": "bob@example.com",\n  "password": "password789"\n}', res: '{\n  "success": true,\n  "message": "Login successful",\n  "data": {\n    "token": "Ym9iLXdpbHNvbjoxNzA0Mjc3MjAwMDAwMA==",\n    "user": {"id": "bob-wilson", "name": "Bob Wilson", "email": "bob@example.com"}\n  }\n}' },
+                { method: 'POST', url: '/api/auth/login', title: 'Login Invalid Credentials', req: '{\n  "email": "wrong@example.com",\n  "password": "wrongpass"\n}', res: '{\n  "success": false,\n  "message": "Invalid email or password"\n}' },
+                { method: 'POST', url: '/api/auth/register', title: 'Register New User 1', req: '{\n  "name": "New User",\n  "email": "newuser@example.com",\n  "password": "newpass123",\n  "phone": "08111111111"\n}', res: '{\n  "success": true,\n  "message": "Registration successful",\n  "data": {\n    "token": "dXNlci1uZXctMToxNzA0Mjc3MjAwMDAwMA==",\n    "user": {"id": "user-new-1", "name": "New User", "email": "newuser@example.com"}\n  }\n}' },
+                { method: 'POST', url: '/api/auth/register', title: 'Register New User 2', req: '{\n  "name": "Another User",\n  "email": "another@example.com",\n  "password": "anotherpass456",\n  "phone": "08222222222"\n}', res: '{\n  "success": true,\n  "message": "Registration successful",\n  "data": {\n    "token": "dXNlci1uZXctMjoxNzA0Mjc3MjAwMDAwMA==",\n    "user": {"id": "user-new-2", "name": "Another User", "email": "another@example.com"}\n  }\n}' },
+                { method: 'POST', url: '/api/auth/register', title: 'Register Duplicate Email', req: '{\n  "name": "Duplicate User",\n  "email": "john@example.com",\n  "password": "pass123"\n}', res: '{\n  "success": false,\n  "message": "Email already registered"\n}' },
+                { method: 'GET', url: '/api/auth/verify', title: 'Verify Valid Token', req: 'GET /api/auth/verify\nHeader: Authorization: Bearer am9obi1kb2U6MTcwNDI3NzIwMDAwMA==', res: '{\n  "success": true,\n  "message": "Token is valid",\n  "data": {"user": {"id": "john-doe", "name": "John Doe", "email": "john@example.com"}}\n}' },
+                { method: 'GET', url: '/api/auth/verify', title: 'Verify Invalid Token', req: 'GET /api/auth/verify\nHeader: Authorization: Bearer invalid-token', res: '{\n  "success": false,\n  "message": "Invalid token"\n}' },
+                { method: 'GET', url: '/api/auth/verify', title: 'Verify Missing Token', req: 'GET /api/auth/verify\n(No Authorization header)', res: '{\n  "success": false,\n  "message": "Token is required"\n}' }
             ],
             products: [
                 { method: 'GET', url: '/api/products', title: 'Get All Products', req: 'GET /api/products', res: '{\n  "success": true,\n  "data": [...10 products],\n  "total": 10\n}' },

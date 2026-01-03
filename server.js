@@ -859,6 +859,138 @@ app.delete('/api/cart', (req, res) => {
   });
 });
 
+// ==================== AUTHENTICATION ====================
+
+// POST login user
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body;
+  
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Email and password are required'
+    });
+  }
+
+  const user = users.find(u => u.email === email && u.password === password);
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid email or password'
+    });
+  }
+
+  // Generate simple token (in production, use JWT)
+  const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+
+  res.json({
+    success: true,
+    message: 'Login successful',
+    data: {
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address
+      }
+    }
+  });
+});
+
+// POST register new user
+app.post('/api/auth/register', (req, res) => {
+  const { name, email, password, phone, address } = req.body;
+  
+  if (!name || !email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Name, email, and password are required'
+    });
+  }
+
+  const emailExists = users.find(u => u.email === email);
+  if (emailExists) {
+    return res.status(400).json({
+      success: false,
+      message: 'Email already registered'
+    });
+  }
+
+  const newUser = {
+    id: uuidv4(),
+    name,
+    email,
+    password,
+    phone: phone || '',
+    address: address || '',
+    createdAt: new Date()
+  };
+
+  users.push(newUser);
+
+  // Generate token
+  const token = Buffer.from(`${newUser.id}:${Date.now()}`).toString('base64');
+
+  res.status(201).json({
+    success: true,
+    message: 'Registration successful',
+    data: {
+      token,
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        phone: newUser.phone,
+        address: newUser.address
+      }
+    }
+  });
+});
+
+// GET verify token
+app.get('/api/auth/verify', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: 'Token is required'
+    });
+  }
+
+  try {
+    const decoded = Buffer.from(token, 'base64').toString('utf-8');
+    const userId = decoded.split(':')[0];
+    const user = users.find(u => u.id === userId);
+    
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid token'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Token is valid',
+      data: {
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email
+        }
+      }
+    });
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: 'Invalid token'
+    });
+  }
+});
+
 // ==================== API INFO ====================
 
 app.get('/api', (req, res) => {
@@ -868,6 +1000,11 @@ app.get('/api', (req, res) => {
     version: '1.0.0',
     endpoints: {
       health: 'GET /api/health',
+      auth: {
+        login: 'POST /api/auth/login',
+        register: 'POST /api/auth/register',
+        verify: 'GET /api/auth/verify'
+      },
       products: {
         getAll: 'GET /api/products',
         getById: 'GET /api/products/:id',
