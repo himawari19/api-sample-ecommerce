@@ -44,14 +44,11 @@ const adminLimiter = rateLimit({
 app.use(generalLimiter);
 
 // Swagger UI
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
-  swaggerOptions: {
-    url: '/swagger.json'
-  }
-}));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Serve swagger.json
-app.get('/swagger.json', (req, res) => {
+app.get('/api/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   res.sendFile(path.join(__dirname, 'swagger.json'));
 });
 
