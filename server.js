@@ -132,6 +132,7 @@ function cacheMiddleware(duration = 5 * 60 * 1000) { // 5 minutes default
 
     if (cachedData && Date.now() < cachedData.expiry) {
       res.set('X-Cache', 'HIT');
+      res.set('Cache-Control', 'public, max-age=300'); // 5 minutes
       return res.json(cachedData.data);
     }
 
@@ -145,6 +146,7 @@ function cacheMiddleware(duration = 5 * 60 * 1000) { // 5 minutes default
         expiry: Date.now() + duration
       });
       res.set('X-Cache', 'MISS');
+      res.set('Cache-Control', 'public, max-age=300'); // 5 minutes
       return originalJson(data);
     };
 
@@ -160,11 +162,17 @@ function clearCache() {
 
 // Clear specific cache key
 function clearCacheKey(pattern) {
+  let clearedCount = 0;
   for (let key of cache.keys()) {
-    if (key.includes(pattern)) {
+    // Match pattern at the start of the key (before any query parameters)
+    if (key.startsWith(pattern) || key.includes(pattern)) {
       cache.delete(key);
+      clearedCount++;
       console.log(`🗑️ Cache cleared: ${key}`);
     }
+  }
+  if (clearedCount === 0) {
+    console.log(`⚠️ No cache found for pattern: ${pattern}`);
   }
 }
 
@@ -227,6 +235,16 @@ app.use(metricsMiddleware);
 
 // Apply cache middleware to GET requests (5 minutes cache)
 app.use(cacheMiddleware(5 * 60 * 1000));
+
+// Middleware to prevent caching on write operations
+app.use((req, res, next) => {
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+  }
+  next();
+});
 
 // ==================== VALIDATION HELPERS ====================
 
