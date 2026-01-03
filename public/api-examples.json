@@ -1,0 +1,210 @@
+{
+  "products": [
+    {
+      "title": "Example 1 - Get All Products",
+      "method": "GET",
+      "url": "/api/products"
+    },
+    {
+      "title": "Example 2 - Get Product by ID",
+      "method": "GET",
+      "url": "/api/products/:id"
+    },
+    {
+      "title": "Example 3 - Create Product (Smartphone)",
+      "method": "POST",
+      "url": "/api/products"
+    },
+    {
+      "title": "Example 4 - Create Product (Headphones)",
+      "method": "POST",
+      "url": "/api/products"
+    },
+    {
+      "title": "Example 5 - Create Product (USB Cable)",
+      "method": "POST",
+      "url": "/api/products"
+    },
+    {
+      "title": "Example 6 - Update Product (Full)",
+      "method": "PUT",
+      "url": "/api/products/:id"
+    },
+    {
+      "title": "Example 7 - Partial Update Product (Price)",
+      "method": "PATCH",
+      "url": "/api/products/:id"
+    },
+    {
+      "title": "Example 8 - Partial Update Product (Stock)",
+      "method": "PATCH",
+      "url": "/api/products/:id"
+    },
+    {
+      "title": "Example 9 - Partial Update Product (Rating)",
+      "method": "PATCH",
+      "url": "/api/products/:id"
+    },
+    {
+      "title": "Example 10 - Delete Product",
+      "method": "DELETE",
+      "url": "/api/products/:id"
+    }
+  ],
+  "users": [
+    {
+      "title": "Example 1 - Get All Users",
+      "method": "GET",
+      "url": "/api/users"
+    },
+    {
+      "title": "Example 2 - Get User by ID",
+      "method": "GET",
+      "url": "/api/users/:id"
+    },
+    {
+      "title": "Example 3 - Create User (Jane)",
+      "method": "POST",
+      "url": "/api/users"
+    },
+    {
+      "title": "Example 4 - Create User (Bob)",
+      "method": "POST",
+      "url": "/api/users"
+    },
+    {
+      "title": "Example 5 - Create User (Alice)",
+      "method": "POST",
+      "url": "/api/users"
+    },
+    {
+      "title": "Example 6 - Update User (Full)",
+      "method": "PUT",
+      "url": "/api/users/:id"
+    },
+    {
+      "title": "Example 7 - Partial Update (Phone)",
+      "method": "PATCH",
+      "url": "/api/users/:id"
+    },
+    {
+      "title": "Example 8 - Partial Update (Address)",
+      "method": "PATCH",
+      "url": "/api/users/:id"
+    },
+    {
+      "title": "Example 9 - Delete User",
+      "method": "DELETE",
+      "url": "/api/users/:id"
+    },
+    {
+      "title": "Example 10 - Get All Users (After Changes)",
+      "method": "GET",
+      "url": "/api/users"
+    }
+  ],
+  "orders": [
+    {
+      "title": "Example 1 - Get All Orders",
+      "method": "GET",
+      "url": "/api/orders"
+    },
+    {
+      "title": "Example 2 - Get Order by ID",
+      "method": "GET",
+      "url": "/api/orders/:id"
+    },
+    {
+      "title": "Example 3 - Create Order 1",
+      "method": "POST",
+      "url": "/api/orders"
+    },
+    {
+      "title": "Example 4 - Create Order 2",
+      "method": "POST",
+      "url": "/api/orders"
+    },
+    {
+      "title": "Example 5 - Create Order 3",
+      "method": "POST",
+      "url": "/api/orders"
+    },
+    {
+      "title": "Example 6 - Update Order (Status)",
+      "method": "PUT",
+      "url": "/api/orders/:id"
+    },
+    {
+      "title": "Example 7 - Partial Update (Delivered)",
+      "method": "PATCH",
+      "url": "/api/orders/:id"
+    },
+    {
+      "title": "Example 8 - Partial Update (Cancelled)",
+      "method": "PATCH",
+      "url": "/api/orders/:id"
+    },
+    {
+      "title": "Example 9 - Delete Order",
+      "method": "DELETE",
+      "url": "/api/orders/:id"
+    },
+    {
+      "title": "Example 10 - Get All Orders (After Changes)",
+      "method": "GET",
+      "url": "/api/orders"
+    }
+  ],
+  "cart": [
+    {
+      "title": "Example 1 - Get Empty Cart",
+      "method": "GET",
+      "url": "/api/cart"
+    },
+    {
+      "title": "Example 2 - Add Item 1 (Laptop)",
+      "method": "POST",
+      "url": "/api/cart"
+    },
+    {
+      "title": "Example 3 - Add Item 2 (Smartphone)",
+      "method": "POST",
+      "url": "/api/cart"
+    },
+    {
+      "title": "Example 4 - Add Item 3 (Headphones)",
+      "method": "POST",
+      "url": "/api/cart"
+    },
+    {
+      "title": "Example 5 - Add Duplicate Item",
+      "method": "POST",
+      "url": "/api/cart"
+    },
+    {
+      "title": "Example 6 - Update Quantity 1",
+      "method": "PUT",
+      "url": "/api/cart/:productId"
+    },
+    {
+      "title": "Example 7 - Update Quantity 2",
+      "method": "PUT",
+      "url": "/api/cart/:productId"
+    },
+    {
+      "title": "Example 8 - Remove Item",
+      "method": "DELETE",
+      "url": "/api/cart/:productId"
+    },
+    {
+      "title": "Example 9 - Clear Cart",
+      "method": "DELETE",
+      "url": "/api/cart"
+    },
+    {
+      "title": "Example 10 - Get Cart After Clear",
+      "method": "GET",
+      "url": "/api/cart"
+    }
+  ]
+}
