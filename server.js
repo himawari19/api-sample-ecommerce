@@ -58,6 +58,17 @@ app.get('/api/docs', swaggerUi.setup(swaggerDocument, {
   }
 }));
 
+// Serve swagger.json
+app.get('/api/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.json(swaggerDocument);
+});
+
+// Serve custom swagger HTML
+app.get('/swagger', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'swagger.html'));
+});
+
 // In-memory database
 let products = [
   {
